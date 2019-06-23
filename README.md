@@ -1,3 +1,5 @@
+[Лекции здесь](https://yadi.sk/d/Eo744cD23TxQZW)
+
 Настройки
 
 - включить галочку `Enable annotation processing` в `File | Settings | Build, Execution, Deployment | Compiler | Annotation Processors`
