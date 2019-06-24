@@ -1,4 +1,5 @@
 [Лекции здесь](https://yadi.sk/d/Eo744cD23TxQZW)
+[Примеры кода с лекций](https://github.com/AndreyElagin/java-core-course/tree/master/src/main/java/com/epam/classwork)
 
 Настройки
 
