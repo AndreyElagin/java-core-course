@@ -1,5 +1,8 @@
 package com.epam.homework;
 
+import java.util.Scanner;
+import  java.util.Stack;
+
 public class Task1 {
 
     /**
@@ -34,7 +37,26 @@ public class Task1 {
      * MAX (35): Приятна мне твоя прощальная краса —
      */
     public static void main(String[] args) {
-        // TODO реализация
+
+        String minString = "";
+        String maxString = "";
+        int minLength = 0;
+        int maxLength = 0;
+
+        Scanner in = new Scanner(System.in);
+        int numberOfLines = in.nextInt();
+
+        Stack<String> stackOfLines = new Stack<>();
+
+        for (int i = 0; i <= numberOfLines; i++) {
+            String currentLine = in.nextLine();
+            stackOfLines.push(currentLine);
+        }
+
+
+
+
+
 
         // TODO System.out.println("MIN (" + minLength + "): " + minString);
         // TODO System.out.println("MAX (" + maxLength + "): " + maxString);
