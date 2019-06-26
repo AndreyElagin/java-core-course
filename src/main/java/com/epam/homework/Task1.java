@@ -1,7 +1,9 @@
 package com.epam.homework;
 
-import java.util.Scanner;
-import  java.util.Stack;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 
 public class Task1 {
 
@@ -36,29 +38,46 @@ public class Task1 {
      * MIN (29): Унылая пора! Очей очарованье!
      * MAX (35): Приятна мне твоя прощальная краса —
      */
-    public static void main(String[] args) {
 
-        String minString = "";
-        String maxString = "";
-        int minLength = 0;
-        int maxLength = 0;
 
-        Scanner in = new Scanner(System.in);
-        int numberOfLines = in.nextInt();
 
-        Stack<String> stackOfLines = new Stack<>();
 
-        for (int i = 0; i <= numberOfLines; i++) {
-            String currentLine = in.nextLine();
-            stackOfLines.push(currentLine);
+        public static void main (final String[] args) throws IOException {
+
+            final String EXIT_COMMAND = "exit";
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("Enter the number of lines (from 0 to 100), or '" + EXIT_COMMAND + "' to quit");
+
+            String numberOfLinesString = br.readLine();
+            Integer numberOfLines = Integer.valueOf(numberOfLinesString);
+
+            String[] inputLinesArr = new String[numberOfLines];
+
+            System.out.println("Enter " + numberOfLines + " lines to compare, or '" + EXIT_COMMAND + "' to quit");
+
+
+            String minString = "";
+            String maxString = "";
+            int minLength = 0;
+            int maxLength = 0;
+
+            for (int i = 0; i < numberOfLines; i++) {
+                String currentLine = br.readLine();
+                inputLinesArr[i] = currentLine;
+            }
+
+            //System.out.println(inputLinesArr);
+
+
+
+
+            // TODO System.out.println("MIN (" + minLength + "): " + minString);
+            // TODO System.out.println("MAX (" + maxLength + "): " + maxString);
         }
 
 
 
 
 
-
-        // TODO System.out.println("MIN (" + minLength + "): " + minString);
-        // TODO System.out.println("MAX (" + maxLength + "): " + maxString);
-    }
 }
