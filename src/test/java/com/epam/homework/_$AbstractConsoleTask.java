@@ -49,7 +49,7 @@ abstract class _$AbstractConsoleTask extends _$AbstractTask {
         }
 
         final Consumer<String> getChecker() {
-            return result -> assertEquals(getOutput(), new String(out.toByteArray()));
+            return result -> assertEquals(getOutput().trim(), new String(out.toByteArray()).trim());
         }
 
         abstract String getInput();
