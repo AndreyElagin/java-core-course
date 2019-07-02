@@ -94,6 +94,16 @@ class Task1TTest extends _$AbstractConsoleTask {
                 "Люблю я пышное природы увяданье,", "В багрец и в золото одетые леса,");
     }
 
+    /**
+     * Тест 8 строк, пятая минимальная, шестая максимальная.
+     */
+    @Test
+    void test7() {
+        test(" ", "Дверь отворилась и в квартиру",
+                "Олег с утра шарахнул водки","Текилу, виски и коньяк",
+                "Оксана все не хорошела", "Никак", " ", "Дверь отворилась и в квартиру", "Оксана мокрая вошла",
+                "И мужу бледному сказала", "Ты плохо камень привязал");
+    }
 
     private void test(String expectedMinimal, String expectedMaximal, String...strings) {
         test(new _$TestCase(expectedMinimal, expectedMaximal, strings, strings.length));

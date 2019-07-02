@@ -3,7 +3,6 @@ package com.epam.homework;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
 
 
 public class Task1 {
@@ -42,41 +41,55 @@ public class Task1 {
 
 
     public static void main(final String[] args) throws IOException {
-
-        final String EXIT_COMMAND = "exit";
+        final String exitCommand = "exit";
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //System.out.println("Enter the number of lines (from 0 to 100), or '" + EXIT_COMMAND + "' to quit");
 
         String numberOfLinesString = br.readLine();
-        Integer numberOfLines = Integer.valueOf(numberOfLinesString);
+        if (Exiting(exitCommand, numberOfLinesString)) return;
 
+        int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
-        //System.out.println("Enter " + numberOfLines + " lines to compare, or '" + EXIT_COMMAND + "' to quit");
 
         for (int i = 0; i < numberOfLines; i++) {
             String currentLine = br.readLine();
+            if (Exiting(exitCommand, currentLine)) return;
             inputLinesArr[i] = currentLine;
         }
 
-        for (int i = inputLinesArr.length - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (inputLinesArr[j].length() > inputLinesArr[j + 1].length()) {
-                    String tmp = inputLinesArr[j];
-                    inputLinesArr[j] = inputLinesArr[j + 1];
-                    inputLinesArr[j + 1] = tmp;
-                }
+        int min = inputLinesArr[0].length();
+        int indexMin = 0;
+        int max = inputLinesArr[0].length();
+        int indexMax = 0;
+
+
+        for (int i = 0; i < inputLinesArr.length; i++) {
+            if (inputLinesArr[i].length() < min) {
+                min = inputLinesArr[i].length();
+                indexMin = i;
+            }
+            if (inputLinesArr[i].length() > max) {
+                max = inputLinesArr[i].length();
+                indexMax = i;
             }
         }
 
-        String minString = inputLinesArr[0];
-        String maxString = inputLinesArr[numberOfLines - 1];
-        int minLength = inputLinesArr[0].length();
-        int maxLength = inputLinesArr[numberOfLines - 1].length();
+        String minString = inputLinesArr[indexMin];
+        String maxString = inputLinesArr[indexMax];
+        int minLength = inputLinesArr[indexMin].length();
+        int maxLength = inputLinesArr[indexMax].length();
 
         System.out.println("MIN (" + minLength + "): " + minString);
         System.out.println("MAX (" + maxLength + "): " + maxString);
+    }
+
+    private static boolean Exiting(String exitCommand, String exitPoint) {
+        if (exitPoint.toLowerCase().equals(exitCommand)) {
+            System.out.println("Exiting");
+            return true;
+        }
+        return false;
     }
 
 
