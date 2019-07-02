@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
 public class Task1 {
 
     /**
@@ -39,7 +38,6 @@ public class Task1 {
      * MAX (35): Приятна мне твоя прощальная краса —
      */
 
-
     public static void main(final String[] args) throws IOException {
         final String exitCommand = "exit";
 
@@ -51,7 +49,6 @@ public class Task1 {
         int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
-
         for (int i = 0; i < numberOfLines; i++) {
             String currentLine = br.readLine();
             if (Exiting(exitCommand, currentLine)) return;
@@ -62,7 +59,6 @@ public class Task1 {
         int indexMin = 0;
         int max = inputLinesArr[0].length();
         int indexMax = 0;
-
 
         for (int i = 0; i < inputLinesArr.length; i++) {
             if (inputLinesArr[i].length() < min) {
@@ -91,6 +87,4 @@ public class Task1 {
         }
         return false;
     }
-
-
 }
