@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
 public class Task1 {
 
     /**
@@ -39,22 +38,18 @@ public class Task1 {
      * MAX (35): Приятна мне твоя прощальная краса —
      */
 
-
     public static void main(final String[] args) throws IOException {
-        final String exitCommand = "exit";
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String numberOfLinesString = br.readLine();
-        if (Exiting(exitCommand, numberOfLinesString)) return;
+        if (isExitCommand(numberOfLinesString)) return;
 
         int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
-
         for (int i = 0; i < numberOfLines; i++) {
             String currentLine = br.readLine();
-            if (Exiting(exitCommand, currentLine)) return;
+            if (isExitCommand(currentLine)) return;
             inputLinesArr[i] = currentLine;
         }
 
@@ -62,7 +57,6 @@ public class Task1 {
         int indexMin = 0;
         int max = inputLinesArr[0].length();
         int indexMax = 0;
-
 
         for (int i = 0; i < inputLinesArr.length; i++) {
             if (inputLinesArr[i].length() < min) {
@@ -84,13 +78,12 @@ public class Task1 {
         System.out.println("MAX (" + maxLength + "): " + maxString);
     }
 
-    private static boolean Exiting(String exitCommand, String exitPoint) {
+    private static boolean isExitCommand(String exitPoint) {
+        final String exitCommand = "exit";
         if (exitPoint.toLowerCase().equals(exitCommand)) {
             System.out.println("Exiting");
             return true;
         }
         return false;
     }
-
-
 }
