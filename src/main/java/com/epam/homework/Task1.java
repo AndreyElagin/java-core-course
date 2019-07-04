@@ -39,19 +39,17 @@ public class Task1 {
      */
 
     public static void main(final String[] args) throws IOException {
-        final String exitCommand = "exit";
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String numberOfLinesString = br.readLine();
-        if (Exiting(exitCommand, numberOfLinesString)) return;
+        if (isExitCommand(numberOfLinesString)) return;
 
         int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
         for (int i = 0; i < numberOfLines; i++) {
             String currentLine = br.readLine();
-            if (Exiting(exitCommand, currentLine)) return;
+            if (isExitCommand(currentLine)) return;
             inputLinesArr[i] = currentLine;
         }
 
@@ -80,8 +78,8 @@ public class Task1 {
         System.out.println("MAX (" + maxLength + "): " + maxString);
     }
 
-    private static boolean Exiting(String exitCommand, String exitPoint) {
-        if (exitPoint.toLowerCase().equals(exitCommand)) {
+    private static boolean isExitCommand(String exitPoint) {
+        if ("exit".equals(exitPoint.toLowerCase())) {
             System.out.println("Exiting");
             return true;
         }
