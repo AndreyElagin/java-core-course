@@ -79,8 +79,7 @@ public class Task1 {
     }
 
     private static boolean isExitCommand(String exitPoint) {
-        final String exitCommand = "exit";
-        if (exitCommand.equals(exitPoint.toLowerCase())) {
+        if ("exit".equals(exitPoint.toLowerCase())) {
             System.out.println("Exiting");
             return true;
         }
