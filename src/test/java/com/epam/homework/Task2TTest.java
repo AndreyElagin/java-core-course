@@ -59,7 +59,7 @@ class Task2TTest extends _$AbstractConsoleTask {
     void test1() {
         test(new String[]{
                 "_________________________27"
-        }, new String[]{
+        }, 1, new String[]{
                 "_________________________27"
         });
     }
@@ -72,7 +72,7 @@ class Task2TTest extends _$AbstractConsoleTask {
         test(new String[]{
                 "Тихо струится река серебристая", "В царстве вечернем зеленой весны.",
                 "Солнце садится за горы лесистые.", "Рог золотой выплывает луны."
-        }, new String[]{
+        }, 4, new String[]{
                 "Рог золотой выплывает луны.", "Тихо струится река серебристая",
                 "Солнце садится за горы лесистые.", "В царстве вечернем зеленой весны."
         });
@@ -85,7 +85,7 @@ class Task2TTest extends _$AbstractConsoleTask {
     void test3() {
         test(new String[]{
                 "3333", "444", "11", "2"
-        }, new String[]{
+        }, 4, new String[]{
                 "2", "11", "444", "3333"
         });
     }
@@ -97,7 +97,7 @@ class Task2TTest extends _$AbstractConsoleTask {
     void test4() {
         test(new String[]{
                 "444", "333", "222", "111"
-        }, new String[]{
+        }, 4, new String[]{
                 "111", "222", "333", "444"
         });
     }
@@ -109,7 +109,7 @@ class Task2TTest extends _$AbstractConsoleTask {
     void test5() {
         test(new String[]{
                 "gable", "table", "apple"
-        }, new String[]{
+        }, 3, new String[]{
                 "apple", "gable", "table"
         });
     }
@@ -121,7 +121,7 @@ class Task2TTest extends _$AbstractConsoleTask {
     void test6() {
         test(new String[]{
                 "", "", ""
-        }, new String[]{
+        }, 3, new String[]{
                 "", "", ""
         });
     }
@@ -134,22 +134,21 @@ class Task2TTest extends _$AbstractConsoleTask {
         test(new String[]{
                 "123456789012345", "12345678901234", "1234567890123", "123456789012", "12345678901", "1234567890",
                 "123456789", "12345678", "1234567", "123456", "12345", "1234", "123", "12", "1"
-        }, new String[]{
+        }, 15, new String[]{
                 "1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789", "1234567890",
                 "12345678901", "123456789012", "1234567890123", "12345678901234", "123456789012345"
         });
     }
 
 
-
     private void test(String[] original, String[] sorted) {
         test(original, original.length, sorted);
     }
-    
+
     private void test(String[] original, int numberStringToAnalyze, String[] sorted) {
         test(new _$TestCase(original, sorted, numberStringToAnalyze));
     }
-    
+
     @Value
     @EqualsAndHashCode(callSuper = true)
     private final class _$TestCase extends _$AbstractConsoleTestCase {
@@ -160,16 +159,16 @@ class Task2TTest extends _$AbstractConsoleTask {
         @Override
         String getInput() {
             return String.valueOf(numberStringToAnalyze) + lineSeparator()
-                 + String.join(lineSeparator(), original) + lineSeparator();
+                    + String.join(lineSeparator(), original) + lineSeparator();
         }
 
         @Override
         String getOutput() {
             return Arrays.stream(sorted)
-                         .limit(numberStringToAnalyze)
-                         .map(line -> "(" + line.length() + "): " + line)
-                         .collect(joining(lineSeparator()))
-                         .concat(lineSeparator());
+                    .limit(numberStringToAnalyze)
+                    .map(line -> "(" + line.length() + "): " + line)
+                    .collect(joining(lineSeparator()))
+                    .concat(lineSeparator());
         }
     }
 }

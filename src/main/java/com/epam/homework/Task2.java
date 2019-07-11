@@ -3,6 +3,8 @@ package com.epam.homework;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Task2 {
 
@@ -46,60 +48,47 @@ public class Task2 {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String numberOfLinesString = br.readLine();
-        if (isExitCommand(numberOfLinesString)) return;
+        if (isExitCommand(numberOfLinesString)) {
+            return;
+        }
 
+        String[] inputLinesArr = createArrayOfInputString(numberOfLinesString, br);
+
+        if (inputLinesArr[Integer.valueOf(numberOfLinesString) - 1] != null) {
+            Arrays.sort(inputLinesArr, new LengthComparator());
+            for (String current : inputLinesArr) {
+                System.out.println("(" + current.length() + "): " + current);
+            }
+        }
+    }
+
+    private static boolean isExitCommand(String exitPoint) {
+        return "exit".equals(exitPoint.toLowerCase());
+    }
+
+    private static String[] createArrayOfInputString(String numberOfLinesString, BufferedReader br) throws IOException {
         int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
         for (int i = 0; i < numberOfLines; i++) {
             String currentLine = br.readLine();
-            if (isExitCommand(currentLine)) return;
+            if (isExitCommand(currentLine)) {
+                break;
+            }
             inputLinesArr[i] = currentLine;
         }
-
-        String[] resultArr = insertSort(inputLinesArr);
-        for (String current : resultArr
-        ) {
-            System.out.println("(" + current.length() + "): " + current);
-        }
-    }
-
-    private static boolean isExitCommand(String exitPoint) {
-        if ("exit".equals(exitPoint.toLowerCase())) {
-            System.out.println("Exiting");
-            return true;
-        }
-        return false;
-    }
-
-    private static String[] insertSort(String[] array) {
-        String temp;
-        int insertIndex;
-
-        for (int i = 0; i < array.length - 1; i++) {
-            if (array[i].length() > array[i + 1].length()) {
-                temp = array[i + 1];
-                array[i + 1] = array[i];
-                insertIndex = i;
-                while (insertIndex > 0 && temp.length() < array[insertIndex - 1].length()) {
-                    array[insertIndex] = array[insertIndex - 1];
-                    insertIndex--;
-                }
-                array[insertIndex] = temp;
-            } else if (array[i].length() == array[i + 1].length()) {
-                if (array[i].compareTo(array[i + 1]) > 0) {
-                    temp = array[i + 1];
-                    array[i + 1] = array[i];
-                    insertIndex = i;
-                    while (insertIndex > 0 && array[insertIndex].compareTo(temp) > 0) {
-                        array[insertIndex] = array[insertIndex - 1];
-                        insertIndex--;
-                    }
-                    array[insertIndex] = temp;
-                }
-            }
-        }
-        return array;
+        return inputLinesArr;
     }
 }
 
+class LengthComparator implements Comparator<String> {
+    public int compare(String first, String second) {
+        int result = first.length() - second.length();
+
+        if (result != 0) {
+            return result;
+        } else {
+            return first.compareTo(second);
+        }
+    }
+}
