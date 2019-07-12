@@ -55,7 +55,7 @@ public class Task2 {
         String[] inputLinesArr = readConsoleInput(numberOfLinesString, br);
 
         if (inputLinesArr[Integer.valueOf(numberOfLinesString) - 1] != null) {
-            Arrays.sort(inputLinesArr, LengthComparator.getInstance());
+            insertSort(inputLinesArr);
             for (String current : inputLinesArr) {
                 System.out.println("(" + current.length() + "): " + current);
             }
@@ -79,6 +79,31 @@ public class Task2 {
             inputLinesArr[i] = currentLine;
         }
         return inputLinesArr;
+    }
+
+    private static void insertSort(String[] array) {
+        String temp;
+        int insertIndex;
+        Comparator<String> instance = LengthComparator.getInstance();
+
+        for (int i = 0; i < array.length - 1; i++) {
+            if (instance.compare(array[i], array[i + 1]) > 0) {
+                temp = array[i + 1];
+                array[i + 1] = array[i];
+                insertIndex = i;
+
+                while (insertIndex > 0 && temp.length() < array[insertIndex - 1].length()) {
+                    array[insertIndex] = array[insertIndex - 1];
+                    insertIndex--;
+                }
+
+                while (insertIndex > 0 && array[insertIndex].compareTo(temp) > 0) {
+                    array[insertIndex] = array[insertIndex - 1];
+                    insertIndex--;
+                }
+                array[insertIndex] = temp;
+            }
+        }
     }
 }
 
