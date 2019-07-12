@@ -52,10 +52,10 @@ public class Task2 {
             return;
         }
 
-        String[] inputLinesArr = createArrayOfInputString(numberOfLinesString, br);
+        String[] inputLinesArr = readConsoleInput(numberOfLinesString, br);
 
         if (inputLinesArr[Integer.valueOf(numberOfLinesString) - 1] != null) {
-            Arrays.sort(inputLinesArr, new LengthComparator());
+            Arrays.sort(inputLinesArr, LengthComparator.getInstance());
             for (String current : inputLinesArr) {
                 System.out.println("(" + current.length() + "): " + current);
             }
@@ -66,7 +66,8 @@ public class Task2 {
         return "exit".equals(exitPoint.toLowerCase());
     }
 
-    private static String[] createArrayOfInputString(String numberOfLinesString, BufferedReader br) throws IOException {
+    private static String[] readConsoleInput(String numberOfLinesString,
+                                             BufferedReader br) throws IOException {
         int numberOfLines = Integer.valueOf(numberOfLinesString);
         String[] inputLinesArr = new String[numberOfLines];
 
@@ -82,11 +83,18 @@ public class Task2 {
 }
 
 class LengthComparator implements Comparator<String> {
-    public int compare(String first, String second) {
-        int result = first.length() - second.length();
+    private static LengthComparator instance = new LengthComparator();
 
-        if (result != 0) {
-            return result;
+    public static LengthComparator getInstance() {
+        if (instance == null) {
+            instance = new LengthComparator();
+        }
+        return instance;
+    }
+
+    public int compare(String first, String second) {
+        if (Integer.compare(first.length(), second.length()) != 0) {
+            return Integer.compare(first.length(), second.length());
         } else {
             return first.compareTo(second);
         }
