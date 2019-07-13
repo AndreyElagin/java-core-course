@@ -1,5 +1,9 @@
 package com.epam.homework;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Task3 {
 
     /**
@@ -36,12 +40,55 @@ public class Task3 {
      * (11): Послушайте!
      * (28): Ведь, если звезды зажигают -
      */
-    public static void main(String[] args) {
-        // TODO реализация
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        // TODO System.out.println("AVERAGE (" + averageLength + ")");
-        // TODO foreach($current : $result) {
-        // TODO     System.out.println("(" + current.length() + "): " + current);
-        // TODO }
+        String numberOfLinesString = br.readLine();
+        if (isExitCommand(numberOfLinesString)) {
+            return;
+        }
+
+        String[] inputLinesArr = readConsoleInput(numberOfLinesString, br);
+
+        int averageLength = getSumLength(inputLinesArr) / inputLinesArr.length;
+
+        System.out.println("AVERAGE (" + averageLength + ")");
+        for (String current : inputLinesArr
+        ) {
+            if (current.length() < averageLength) {
+                System.out.println("(" + current.length() + "): " + current);
+            }
+        }
+    }
+
+    private static String[] readConsoleInput(String numberOfLinesString,
+                                             BufferedReader br) throws IOException {
+        int numberOfLines = Integer.valueOf(numberOfLinesString);
+        String[] inputLinesArr = new String[numberOfLines];
+
+        for (int i = 0; i < numberOfLines; i++) {
+            String currentLine = br.readLine();
+            if (isExitCommand(currentLine)) {
+                break;
+            }
+            inputLinesArr[i] = currentLine;
+        }
+        return inputLinesArr;
+    }
+
+    private static boolean isExitCommand(String exitPoint) {
+        if ("exit".equals(exitPoint.toLowerCase())) {
+            System.out.println("Exiting");
+            return true;
+        }
+        return false;
+    }
+
+    private static int getSumLength(String[] inputLinesArr) {
+        int sumLength = 0;
+        for (String s : inputLinesArr) {
+            sumLength += s.length();
+        }
+        return sumLength;
     }
 }
