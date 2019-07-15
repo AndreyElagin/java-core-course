@@ -106,7 +106,7 @@ class LengthComparator implements Comparator<String> {
     }
 
     public int compare(String first, String second) {
-        if (Integer.compare(first.length(), second.length()) != 0) {
+        if (first.length() != second.length()) {
             return Integer.compare(first.length(), second.length());
         } else {
             return first.compareTo(second);
