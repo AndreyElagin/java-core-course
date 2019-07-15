@@ -82,26 +82,14 @@ public class Task2 {
     }
 
     private static void insertSort(String[] array) {
-        String temp;
-        int insertIndex;
         Comparator<String> instance = LengthComparator.getInstance();
-
-        for (int i = 0; i < array.length - 1; i++) {
-            if (instance.compare(array[i], array[i + 1]) > 0) {
-                temp = array[i + 1];
-                array[i + 1] = array[i];
-                insertIndex = i;
-
-                while (insertIndex > 0 && temp.length() < array[insertIndex - 1].length()) {
-                    array[insertIndex] = array[insertIndex - 1];
-                    insertIndex--;
+        for (int i = 0; i < array.length; i++) {
+            for (int j = i + 1; j < array.length; j++) {
+                if (instance.compare(array[i], array[j]) > 0) {
+                    String temp = array[j];
+                    array[j] = array[i];
+                    array[i] = temp;
                 }
-
-                while (insertIndex > 0 && array[insertIndex].compareTo(temp) > 0) {
-                    array[insertIndex] = array[insertIndex - 1];
-                    insertIndex--;
-                }
-                array[insertIndex] = temp;
             }
         }
     }
