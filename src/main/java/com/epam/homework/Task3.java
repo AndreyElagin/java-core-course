@@ -50,7 +50,7 @@ public class Task3 {
 
         String[] inputLinesArr = readConsoleInput(numberOfLinesString, br);
 
-        int averageLength = getAverageLengthOfArrayElements(inputLinesArr);
+        int averageLength = getAverageLengthOfInputLines(inputLinesArr);
 
         System.out.println("AVERAGE (" + averageLength + ")");
         for (String current : inputLinesArr) {
@@ -79,7 +79,7 @@ public class Task3 {
         return "exit".equals(exitPoint.toLowerCase());
     }
 
-    private static int getAverageLengthOfArrayElements(String[] inputLinesArr) {
+    private static int getAverageLengthOfInputLines(String[] inputLinesArr) {
         int sumLength = 0;
         for (String s : inputLinesArr) {
             sumLength += s.length();
