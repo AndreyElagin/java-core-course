@@ -50,11 +50,10 @@ public class Task3 {
 
         String[] inputLinesArr = readConsoleInput(numberOfLinesString, br);
 
-        int averageLength = getSumLength(inputLinesArr) / inputLinesArr.length;
+        int averageLength = getAverageLengthOfArrayElements(inputLinesArr);
 
         System.out.println("AVERAGE (" + averageLength + ")");
-        for (String current : inputLinesArr
-        ) {
+        for (String current : inputLinesArr) {
             if (current.length() < averageLength) {
                 System.out.println("(" + current.length() + "): " + current);
             }
@@ -77,18 +76,14 @@ public class Task3 {
     }
 
     private static boolean isExitCommand(String exitPoint) {
-        if ("exit".equals(exitPoint.toLowerCase())) {
-            System.out.println("Exiting");
-            return true;
-        }
-        return false;
+        return "exit".equals(exitPoint.toLowerCase());
     }
 
-    private static int getSumLength(String[] inputLinesArr) {
+    private static int getAverageLengthOfArrayElements(String[] inputLinesArr) {
         int sumLength = 0;
         for (String s : inputLinesArr) {
             sumLength += s.length();
         }
-        return sumLength;
+        return sumLength / inputLinesArr.length;
     }
 }
