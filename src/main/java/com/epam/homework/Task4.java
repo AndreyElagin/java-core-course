@@ -3,7 +3,6 @@ package com.epam.homework;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Task4 {
 
@@ -32,68 +31,76 @@ public class Task4 {
      */
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String numberOfLinesString = br.readLine();
-        if (isExitCommand(numberOfLinesString)) {
+
+        String enteredNumberOfWords = br.readLine();
+        if (isExitCommand(enteredNumberOfWords)) {
             return;
         }
 
-        int numberOfLines = Integer.valueOf(numberOfLinesString);
-        String currentLine = br.readLine();
-        if (isExitCommand(currentLine)) {
+        String rowWords = br.readLine();
+        if (isExitCommand(rowWords)) {
             return;
         }
 
-        String[] inputLinesArr = currentLine.split(" ", numberOfLines);
-        String wordWithMinimalNumDiffLetters = getWordWithMinimalNumDiffLetters(inputLinesArr);
+        int numberOfWords = Integer.valueOf(enteredNumberOfWords);
+        String[] words = rowWords.split(" ", numberOfWords);
+
+        String wordWithMinimalNumDiffLetters = getWordWithMinimalNumDiffLetters(words);
         System.out.println(wordWithMinimalNumDiffLetters);
     }
 
     private static boolean isExitCommand(String exitPoint) {
-        if ("exit".equals(exitPoint.toLowerCase())) {
-            System.out.println("Exiting");
-            return true;
-        }
-        return false;
+        return "exit".equals(exitPoint.toLowerCase());
     }
 
-    private static String getWordWithMinimalNumDiffLetters(String[] inputLinesArr) {
-        int minIndex = 0;
-        int minLength = 99999;
+    private static String getWordWithMinimalNumDiffLetters(String[] words) {
+        int[] theNumberOfUniqueCharsInEachWord = new int[words.length];
 
-        for (int i = 0; i < inputLinesArr.length; i++) {
-            char[] currentWordToArray = inputLinesArr[i].toCharArray();
+        for (int i = 0; i < words.length; i++) {
+            theNumberOfUniqueCharsInEachWord[i] = getNumberOfUniqueChars(words[i]);
+        }
 
-            for (int j = 0; j < currentWordToArray.length - 1; j++) {
-                for (int k = j + 1; k < currentWordToArray.length; k++) {
-                    if (currentWordToArray[j] == currentWordToArray[k]) {
-                        currentWordToArray[k] = 0;
-                    }
-                }
-            }
+        int indexWordWithMinimalNumDiffLetters =
+                getIndexWordWithMinimalNumDiffLetters(theNumberOfUniqueCharsInEachWord);
 
-            int countDifferentLetter = 0;
+        return words[indexWordWithMinimalNumDiffLetters];
+    }
 
-            for (int j = 0; j < currentWordToArray.length; j++) {
-                if (currentWordToArray[j] != 0) {
-                    countDifferentLetter += 1;
-                }
-            }
+    private static int getNumberOfUniqueChars(String currentWord) {
+        char[] currentWordInChars = currentWord.toCharArray();
+        int numberOfUniqueChars = 0;
 
-            char[] differentsLetterArray = new char[countDifferentLetter];
-            int count = 0;
+        for (int j = 0; j < currentWordInChars.length; j++) {
+            boolean triggerUnique = isUniqueChar(currentWordInChars, j);
 
-            for (int j = 0; j < currentWordToArray.length; j++) {
-                if (currentWordToArray[j] != 0) {
-                    differentsLetterArray[count] = currentWordToArray[j];
-                    count += 1;
-                }
-            }
-
-            if (differentsLetterArray.length < minLength) {
-                minLength = differentsLetterArray.length;
-                minIndex = i;
+            if (triggerUnique) {
+                numberOfUniqueChars += 1;
             }
         }
-        return inputLinesArr[minIndex];
+        return numberOfUniqueChars;
+    }
+
+    private static boolean isUniqueChar(char[] currentWordInChars, int j) {
+        boolean triggerUnique = true;
+
+        for (int k = j + 1; k < currentWordInChars.length; k++) {
+            if (currentWordInChars[j] == currentWordInChars[k]) {
+                triggerUnique = false;
+            }
+        }
+        return triggerUnique;
+    }
+
+    private static int getIndexWordWithMinimalNumDiffLetters(int[] theNumberOfUniqueCharsInEachWord) {
+        int indexWordWithMinimalNumDiffLetters = 0;
+        int minNumberOfUniqueCharacters = 2147483647;
+
+        for (int i = 0; i < theNumberOfUniqueCharsInEachWord.length; i++) {
+            if (theNumberOfUniqueCharsInEachWord[i] < minNumberOfUniqueCharacters) {
+                minNumberOfUniqueCharacters = theNumberOfUniqueCharsInEachWord[i];
+                indexWordWithMinimalNumDiffLetters = i;
+            }
+        }
+        return indexWordWithMinimalNumDiffLetters;
     }
 }
