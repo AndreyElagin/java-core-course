@@ -1,5 +1,9 @@
 package com.epam.homework;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Task4 {
 
     /**
@@ -25,9 +29,54 @@ public class Task4 {
      * Выходные данные:
      * a
      */
-    public static void main(String[] args) {
-        // TODO реализация
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        // TODO System.out.println(wordWithMinimalNumDiffLetters);
+        String enteredNumberOfWords = br.readLine();
+        if (isExitCommand(enteredNumberOfWords)) {
+            return;
+        }
+
+        String rowWords = br.readLine();
+        if (isExitCommand(rowWords)) {
+            return;
+        }
+
+        int numberOfWords = Integer.valueOf(enteredNumberOfWords);
+        String[] words = rowWords.split(" ", numberOfWords);
+
+        String wordMinUniqueChars = getWordMinUniqueChars(words);
+        System.out.println(wordMinUniqueChars);
+    }
+
+    private static boolean isExitCommand(String exitPoint) {
+        return "exit".equals(exitPoint.toLowerCase());
+    }
+
+    private static String getWordMinUniqueChars(String[] words) {
+        String wordMinUniqueChars = words[0];
+        int minNumUniqueChars = getNumUniqueChars(words[0]);
+
+        for (int i = 1; i < words.length; i++) {
+            int numUniqueChars = getNumUniqueChars(words[i]);
+            if (numUniqueChars < minNumUniqueChars) {
+                minNumUniqueChars = numUniqueChars;
+                wordMinUniqueChars = words[i];
+            }
+        }
+        return wordMinUniqueChars;
+    }
+
+    private static int getNumUniqueChars(String word) {
+        boolean[] codePoints = new boolean[256];
+        int numUniqueChars = 0;
+
+        for (int i = 0; i < word.length(); i++) {
+            if (!codePoints[word.codePointAt(i)]) {
+                numUniqueChars++;
+                codePoints[word.codePointAt(i)] = true;
+            }
+        }
+        return numUniqueChars;
     }
 }
