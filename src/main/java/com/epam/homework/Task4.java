@@ -55,10 +55,10 @@ public class Task4 {
 
     private static String getWordMinUniqueChars(String[] words) {
         String wordMinUniqueChars = words[0];
-        int minNumUniqueChars = unique(words[0]);
+        int minNumUniqueChars = getNumUniqueChars(words[0]);
 
         for (int i = 1; i < words.length; i++) {
-            int numUniqueChars = unique(words[i]);
+            int numUniqueChars = getNumUniqueChars(words[i]);
             if (numUniqueChars < minNumUniqueChars) {
                 minNumUniqueChars = numUniqueChars;
                 wordMinUniqueChars = words[i];
@@ -67,17 +67,16 @@ public class Task4 {
         return wordMinUniqueChars;
     }
 
-    private static int unique(String word) {
-        boolean[] flags = new boolean[256];
-        int counter = 0;
+    private static int getNumUniqueChars(String word) {
+        boolean[] codePoints = new boolean[256];
+        int numUniqueChars = 0;
 
         for (int i = 0; i < word.length(); i++) {
-            int ascii = (int) word.charAt(i);
-            if (!flags[ascii]) {
-                counter++;
-                flags[ascii] = true;
+            if (!codePoints[word.codePointAt(i)]) {
+                numUniqueChars++;
+                codePoints[word.codePointAt(i)] = true;
             }
         }
-        return counter;
+        return numUniqueChars;
     }
 }
