@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class ComplexNumberTest {
     @Test
@@ -14,7 +15,7 @@ class ComplexNumberTest {
     }
 
     @Test
-    @DisplayName("Equals method should be symmetry")
+    @DisplayName("Equals method should be symmetric")
     void equals2() {
         ComplexNumber a = new ComplexNumber(1, 1);
         ComplexNumber b = new ComplexNumber(1, 1);
@@ -22,7 +23,7 @@ class ComplexNumberTest {
     }
 
     @Test
-    @DisplayName("Equals method should be transitivity")
+    @DisplayName("Equals method should be transitive")
     void equals3() {
         ComplexNumber a = new ComplexNumber(1, 1);
         ComplexNumber b = new ComplexNumber(1, 1);
@@ -39,7 +40,7 @@ class ComplexNumberTest {
     }
 
     @Test
-    @DisplayName("Null comparison of method equals")
+    @DisplayName("The compared object must be non-null")
     void equals5() {
         ComplexNumber a = new ComplexNumber(1, 1);
         assertFalse(a.equals(null));
@@ -77,6 +78,7 @@ class ComplexNumberTest {
         int im = (int) (min - 0.5 + Math.random() * (max - min + 1));
         ComplexNumber a = new ComplexNumber(re, im);
         ComplexNumber b = new ComplexNumber(re, im);
+        assumeTrue(a.equals(b));
         assertTrue(a.hashCode() == b.hashCode());
     }
 }
