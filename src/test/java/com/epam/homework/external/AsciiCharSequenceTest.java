@@ -7,24 +7,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class AsciiCharSequenceTest {
 
     @Test
-    @DisplayName("Must determine the length of the object type AsciiCharSequence")
+    @DisplayName("Must determine the length of AsciiCharSequence")
     void length() {
-        byte[] input = {'c', 'h', 'e', 'c', 'k'};
-        AsciiCharSequence instance = new AsciiCharSequence(input);
-        assertTrue(instance.length() == 5);
+        byte[] input1 = {'c', 'h', 'e', 'c', 'k'};
+        byte[] input2 = {};
+        AsciiCharSequence instance1 = new AsciiCharSequence(input1);
+        AsciiCharSequence instance2 = new AsciiCharSequence(input2);
+        assertEquals(5, instance1.length());
+        assertEquals(0, instance2.length());
     }
 
     @Test
-    @DisplayName("Must return symbol by index of the object type AsciiCharSequence")
+    @DisplayName("Must return symbol by index of AsciiCharSequence")
     void charAt() {
         byte[] input = {'c', 'h', 'e', 'c', 'k'};
         AsciiCharSequence instance = new AsciiCharSequence(input);
         char returnSymbol = 'c';
-        assertTrue(instance.charAt(0) == returnSymbol);
+        assertEquals(instance.charAt(0), returnSymbol);
     }
 
     @Test
-    @DisplayName("Must return the part of the object type AsciiCharSequence specified part of the index")
+    @DisplayName("Must return the part of AsciiCharSequence specified by the indices")
     void subSequence() {
         byte[] input = {'c', 'h', 'e', 'c', 'k'};
         AsciiCharSequence instance = new AsciiCharSequence(input);

@@ -1,18 +1,12 @@
 package com.epam.homework.external;
 
+import java.util.Arrays;
+
 public class AsciiCharSequence implements CharSequence {
     private byte[] inputCharacterSet;
 
-    public AsciiCharSequence(byte[] input) {
+    AsciiCharSequence(byte[] input) {
         this.inputCharacterSet = input.clone();
-    }
-
-    public static void main(String[] args) {
-        byte[] input = {99, 104, 101, 99, 107};
-        AsciiCharSequence zbc = new AsciiCharSequence(input);
-        System.out.println(zbc);
-        System.out.println(zbc.charAt(0));
-        System.out.println(zbc.subSequence(2,4));
     }
 
     @Override
@@ -38,5 +32,18 @@ public class AsciiCharSequence implements CharSequence {
     @Override
     public String toString() {
         return new String(inputCharacterSet);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AsciiCharSequence that = (AsciiCharSequence) o;
+        return Arrays.equals(inputCharacterSet, that.inputCharacterSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(inputCharacterSet);
     }
 }
