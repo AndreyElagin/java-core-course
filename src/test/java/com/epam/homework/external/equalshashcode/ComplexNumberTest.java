@@ -40,7 +40,7 @@ class ComplexNumberTest {
     }
 
     @Test
-    @DisplayName("The compared object must be non-null")
+    @DisplayName("Should always return false when compares with null")
     void equals5() {
         ComplexNumber a = new ComplexNumber(1, 1);
         assertFalse(a.equals(null));
