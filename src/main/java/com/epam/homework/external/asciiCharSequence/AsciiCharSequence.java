@@ -5,8 +5,15 @@ import java.util.Arrays;
 public class AsciiCharSequence implements CharSequence {
     private byte[] inputCharacterSet;
 
-    AsciiCharSequence(byte[] input) {
+    public AsciiCharSequence(byte[] input) {
+        if (input == null) {
+            throw new IllegalArgumentException("Argument may not be null");
+        }
         this.inputCharacterSet = input.clone();
+    }
+
+    public void setInputCharacterSet(byte[] inputCharacterSet) {
+        this.inputCharacterSet = inputCharacterSet;
     }
 
     @Override
@@ -21,8 +28,7 @@ public class AsciiCharSequence implements CharSequence {
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        int lengthSubSeq = end - start;
-        byte[] subSeq = new byte[lengthSubSeq];
+        byte[] subSeq = new byte[end - start];
         for (int i = start, j = 0; i < end; i++, j++) {
             subSeq[j] = inputCharacterSet[i];
         }
