@@ -12,10 +12,6 @@ public class AsciiCharSequence implements CharSequence {
         this.inputCharacterSet = input.clone();
     }
 
-    public void setInputCharacterSet(byte[] inputCharacterSet) {
-        this.inputCharacterSet = inputCharacterSet;
-    }
-
     @Override
     public int length() {
         return inputCharacterSet.length;

@@ -43,10 +43,9 @@ class AsciiCharSequenceTest {
     void subSequence() {
         byte[] input = {'c', 'h', 'e', 'c', 'k'};
         AsciiCharSequence instance = new AsciiCharSequence(input);
-        AsciiCharSequence instance2 = new AsciiCharSequence(input);
         for (int i = 0; i < input.length; i++) {
             for (int j = i; j < input.length; j++) {
-                instance2.setInputCharacterSet(Arrays.copyOfRange(input, i, j));
+                AsciiCharSequence instance2 = new AsciiCharSequence(Arrays.copyOfRange(input, i, j));
                 assertEquals(instance.subSequence(i, j), instance2);
             }
         }
