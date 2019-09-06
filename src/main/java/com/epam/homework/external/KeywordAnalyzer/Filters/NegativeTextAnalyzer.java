@@ -1,10 +1,10 @@
 package com.epam.homework.external.KeywordAnalyzer.Filters;
 
-import com.epam.homework.external.KeywordAnalyzer.CommentsFilter;
+import com.epam.homework.external.KeywordAnalyzer.Label;
 import com.epam.homework.external.KeywordAnalyzer.KeywordAnalyzer;
 
 public class NegativeTextAnalyzer extends KeywordAnalyzer {
-    private String[] keywords = {":(", "=(", ":|"};
+    private static final String[] keywords = {":(", "=(", ":|"};
 
     @Override
     protected String[] getKeywords() {
@@ -12,7 +12,7 @@ public class NegativeTextAnalyzer extends KeywordAnalyzer {
     }
 
     @Override
-    protected CommentsFilter.Label getLabel() {
-        return CommentsFilter.Label.NEGATIVE_TEXT;
+    protected Label getLabel() {
+        return Label.NEGATIVE_TEXT;
     }
 }
