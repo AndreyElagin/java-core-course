@@ -5,20 +5,10 @@ import com.epam.homework.external.KeywordAnalyzer.Filters.SpamAnalyzer;
 import com.epam.homework.external.KeywordAnalyzer.Filters.TooLongTextAnalyzer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Executors;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommentsFilteringSystemTest {
     private CommentsFilteringSystem initFilteringSystem(String[] spamKeywords, int commentMaxLength) {
-        if (spamKeywords == null) {
-            throw new IllegalArgumentException("An array of spam words cannot be null");
-        }
-        if (commentMaxLength <= 0) {
-            throw new IllegalArgumentException("The maximum comment length cannot be less than or equal to zero");
-        }
-
         return new CommentsFilteringSystem(
                 new TextAnalyzer[]{
                         new SpamAnalyzer(spamKeywords),
@@ -36,7 +26,7 @@ class CommentsFilteringSystemTest {
         String comment = "This spam";
 
         CommentsFilteringSystem test = initFilteringSystem(spamKeywords, commentMaxLength);
-        Label result = test.checkLabels(test.textAnalyzers, comment);
+        Label result = test.checkLabels(comment);
         assertEquals(result, Label.SPAM);
     }
 
@@ -48,7 +38,7 @@ class CommentsFilteringSystemTest {
         String comment = "Bad table :(";
 
         CommentsFilteringSystem test = initFilteringSystem(spamKeywords, commentMaxLength);
-        Label result = test.checkLabels(test.textAnalyzers, comment);
+        Label result = test.checkLabels(comment);
         assertEquals(result, Label.NEGATIVE_TEXT);
     }
 
@@ -60,7 +50,7 @@ class CommentsFilteringSystemTest {
         String comment = "Looooooooong ccccooooommmmmmmeeeeeeeennnnnnnt";
 
         CommentsFilteringSystem test = initFilteringSystem(spamKeywords, commentMaxLength);
-        Label result = test.checkLabels(test.textAnalyzers, comment);
+        Label result = test.checkLabels(comment);
         assertEquals(result, Label.TOO_LONG);
     }
 
@@ -73,7 +63,7 @@ class CommentsFilteringSystemTest {
         String comment = "Good comment";
 
         CommentsFilteringSystem test = initFilteringSystem(spamKeywords, commentMaxLength);
-        Label result = test.checkLabels(test.textAnalyzers, comment);
+        Label result = test.checkLabels(comment);
         assertEquals(result, Label.OK);
     }
 
@@ -85,7 +75,6 @@ class CommentsFilteringSystemTest {
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
             initFilteringSystem(spamKeywords, commentMaxLength);
-            ;
         });
         assertEquals("An array of spam words cannot be null", exception.getMessage());
     }
@@ -111,7 +100,7 @@ class CommentsFilteringSystemTest {
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
             CommentsFilteringSystem test = initFilteringSystem(spamKeywords, commentMaxLength);
-            Label result = test.checkLabels(test.textAnalyzers, comment);
+            Label result = test.checkLabels(comment);
         });
         assertEquals("The analyzed comment cannot be null", exception.getMessage());
     }

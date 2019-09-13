@@ -6,8 +6,11 @@ import com.epam.homework.external.KeywordAnalyzer.TextAnalyzer;
 public class TooLongTextAnalyzer implements TextAnalyzer {
     private final int maxLength;
 
-    public TooLongTextAnalyzer(int input) {
-        this.maxLength = input;
+    public TooLongTextAnalyzer(int maxLength) {
+        if (maxLength <= 0) {
+            throw new IllegalArgumentException("The maximum comment length cannot be less than or equal to zero");
+        }
+        this.maxLength = maxLength;
     }
 
     @Override

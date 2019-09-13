@@ -7,6 +7,9 @@ public class SpamAnalyzer extends KeywordAnalyzer {
     private final String[] keywords;
 
     public SpamAnalyzer(String[] keywords) {
+        if (keywords == null) {
+            throw new IllegalArgumentException("An array of spam words cannot be null");
+        }
         this.keywords = keywords;
     }
 
