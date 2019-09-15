@@ -1,7 +1,9 @@
 package com.epam.homework.external.arraylist;
 
+import java.util.Iterator;
+
 @SuppressWarnings("unchecked")
-public class MyArrayList<E> implements MyList<E> {
+public class MyArrayList<E> implements MyList<E>, Iterable<E> {
     private static final int DEFAULT_CAPACITY = 10;
     private E[] storage = (E[]) new Object[DEFAULT_CAPACITY];
     private int size = 0;
@@ -15,40 +17,46 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public void add(E itemToAdd) {
         if (size >= storage.length) {
-            resize(storage.length * 2);
+            resize((int) (storage.length * 1.5));
         }
         storage[size++] = itemToAdd;
     }
 
     @Override
     public E remove(int index) {
+        if (index > size - 1) {
+            throw new IllegalArgumentException("The entered number goes beyond the bounds of the array");
+        }
         E result = storage[index];
 
-        if (size - index >= 0) {
+        if (size != index) {
             System.arraycopy(storage, index + 1, storage, index, size - index);
         }
         storage[size] = null;
         size--;
 
-        if (storage.length > DEFAULT_CAPACITY && size < storage.length / 2) {
-            resize(storage.length / 2);
+        if (storage.length > DEFAULT_CAPACITY && size < storage.length / 1.5) {
+            resize((int) (storage.length / 1.5));
         }
         return result;
     }
 
     @Override
     public boolean contains(E searchElem) {
-        for (E e : storage) {
-            if (e == searchElem) {
+        for (int i = 0; i < size - 1; i++) {
+            E e = storage[i];
+            if (e.equals(searchElem)) {
                 return true;
             }
         }
         return false;
     }
 
-
     @Override
     public E get(int index) {
+        if (index > size - 1) {
+            throw new IllegalArgumentException("The entered number goes beyond the bounds of the array");
+        }
         return storage[index];
     }
 
@@ -63,5 +71,23 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            private int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size;
+            }
+
+            @Override
+            public E next() {
+                if (!hasNext()) throw new IllegalArgumentException("No next item");
+                return storage[currentIndex++];
+            }
+        };
     }
 }
