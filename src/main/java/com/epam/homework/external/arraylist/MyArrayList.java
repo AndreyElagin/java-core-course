@@ -5,13 +5,22 @@ import java.util.Iterator;
 @SuppressWarnings("unchecked")
 public class MyArrayList<E> implements MyList<E>, Iterable<E> {
     private static final int DEFAULT_CAPACITY = 10;
-    private E[] storage = (E[]) new Object[DEFAULT_CAPACITY];
     private int size = 0;
+
+    MyArrayList<E> myArrayList = new MyArrayList<>() {
+        private E[] storage = (E[]) new Object[DEFAULT_CAPACITY];
+    };
 
     private void resize(int newLengthArray) {
         E[] newStorage = (E[]) new Object[newLengthArray];
         System.arraycopy(storage, 0, newStorage, 0, size);
         storage = newStorage;
+    }
+
+    private void checkIndex(int index) {
+        if (index > size - 1) {
+            throw new IllegalArgumentException("The entered number goes beyond the bounds of the array");
+        }
     }
 
     @Override
@@ -24,9 +33,7 @@ public class MyArrayList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public E remove(int index) {
-        if (index > size - 1) {
-            throw new IllegalArgumentException("The entered number goes beyond the bounds of the array");
-        }
+        checkIndex(index);
         E result = storage[index];
 
         if (size != index) {
@@ -54,9 +61,7 @@ public class MyArrayList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public E get(int index) {
-        if (index > size - 1) {
-            throw new IllegalArgumentException("The entered number goes beyond the bounds of the array");
-        }
+        checkIndex(index);
         return storage[index];
     }
 
