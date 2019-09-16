@@ -5,11 +5,12 @@ import java.util.Iterator;
 @SuppressWarnings("unchecked")
 public class MyArrayList<E> implements MyList<E>, Iterable<E> {
     private static final int DEFAULT_CAPACITY = 10;
+    private E[] storage;
     private int size = 0;
 
-    MyArrayList<E> myArrayList = new MyArrayList<>() {
-        private E[] storage = (E[]) new Object[DEFAULT_CAPACITY];
-    };
+    MyArrayList() {
+        storage = (E[]) new Object[DEFAULT_CAPACITY];
+    }
 
     private void resize(int newLengthArray) {
         E[] newStorage = (E[]) new Object[newLengthArray];
