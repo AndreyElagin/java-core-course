@@ -1,6 +1,7 @@
 package com.epam.homework.external.doublylinkedList;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MyDoublyLinkedList<E> implements MyList<E> {
     private Node first;
@@ -9,18 +10,6 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
 
     public MyDoublyLinkedList() {
         size = 0;
-    }
-
-    private static class Node<E> {
-        E item;
-        Node<E> next;
-        Node<E> prev;
-
-        Node(Node<E> prev, E element, Node<E> next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
     }
 
     public int indexOf(E e) {
@@ -41,7 +30,19 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
         return -1;
     }
 
-    Node<E> node(int index) {
+    private static class Node<E> {
+
+        E item;
+        Node<E> next;
+        Node<E> prev;
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+
+    }
+    private Node<E> node(int index) {
         if (index < (size >> 1)) {
             Node<E> x = first;
             for (int i = 0; i < index; i++)
@@ -69,7 +70,32 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
 
     @Override
     public E remove(int index) {
+        if (!(index >= 0 && index < size)) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
 
+        Node<E> removingNode = node(index);
+        final E element = removingNode.item;
+        final Node<E> next = removingNode.next;
+        final Node<E> prev = removingNode.prev;
+
+        if (prev == null) {
+            first = next;
+        } else {
+            prev.next = next;
+            removingNode.prev = null;
+        }
+
+        if (next == null) {
+            last = prev;
+        } else {
+            next.prev = prev;
+            removingNode.next = null;
+        }
+
+        removingNode.item = null;
+        size--;
+        return element;
     }
 
     @Override
@@ -113,16 +139,39 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
 
     @Override
     public List<E> sublist(int from, int to) {
-        if(from < 0 || from > this.size()-1 || to < 0 || to > this.size()-1){
+        if (from < 0 || from > this.size() - 1 || to < 0 || to > this.size() - 1) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
 
         MyDoublyLinkedList<E> subList = new MyDoublyLinkedList<>();
 
+        subList.first = node(from);
+        subList.last = node(to);
+        subList.size = to - from;
+
+        subList.first.prev = null;
+        subList.last.next = null;
+
+        return (List<E>) subList;
     }
 
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyDoublyLinkedList<?> that = (MyDoublyLinkedList<?>) o;
+        return size == that.size &&
+                Objects.equals(first, that.first) &&
+                Objects.equals(last, that.last);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, last, size);
     }
 }
