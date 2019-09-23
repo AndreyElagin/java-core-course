@@ -32,6 +32,9 @@ class MyDoublyLinkedListTest {
 
         testList.remove(1);
 
+        System.out.println(testList.toString());
+        System.out.println(resultTestList.toString());
+
         assertTrue(testList.equals(resultTestList));
         assertEquals(testList.size(), resultTestList.size());
     }

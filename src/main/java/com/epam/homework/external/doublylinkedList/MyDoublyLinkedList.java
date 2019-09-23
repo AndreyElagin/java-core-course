@@ -1,9 +1,12 @@
 package com.epam.homework.external.doublylinkedList;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
-public class MyDoublyLinkedList<E> implements MyList<E> {
+public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     private Node first;
     private Node last;
     private int size;
@@ -158,6 +161,41 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            private int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size;
+            }
+
+            @Override
+            public E next() {
+                if (!hasNext()) throw new IllegalArgumentException("No next item");
+                return (E) node(currentIndex++);
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
+        Iterator<E> it = iterator();
+        if (! it.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (;;) {
+            E e = it.next();
+            sb.append(e == this ? "(this Collection)" : e);
+            if (! it.hasNext())
+                return sb.append(']').toString();
+            sb.append(',').append(' ');
+        }
     }
 
     @Override

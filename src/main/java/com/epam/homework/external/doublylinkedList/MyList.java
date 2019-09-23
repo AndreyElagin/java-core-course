@@ -12,4 +12,5 @@ public interface MyList<E> {
     E last();
     List<E> sublist(int from, int to);
     int size();
+    String toString();
 }
