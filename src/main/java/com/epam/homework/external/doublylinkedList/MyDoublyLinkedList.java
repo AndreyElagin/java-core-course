@@ -1,15 +1,42 @@
 package com.epam.homework.external.doublylinkedList;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class MyDoublyLinkedList<E> implements MyList<E> {
+public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     private Node first;
     private Node last;
     private int size;
 
     public MyDoublyLinkedList() {
         size = 0;
+    }
+
+    private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
+    Node<E> node(int index) {
+        if (index < (size >> 1)) {
+            Node<E> x = first;
+            for (int i = 0; i < index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--)
+                x = x.prev;
+            return x;
+        }
     }
 
     public int indexOf(E e) {
@@ -28,32 +55,6 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
             }
         }
         return -1;
-    }
-
-    private static class Node<E> {
-
-        E item;
-        Node<E> next;
-        Node<E> prev;
-        Node(Node<E> prev, E element, Node<E> next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
-
-    }
-    private Node<E> node(int index) {
-        if (index < (size >> 1)) {
-            Node<E> x = first;
-            for (int i = 0; i < index; i++)
-                x = x.next;
-            return x;
-        } else {
-            Node<E> x = last;
-            for (int i = size - 1; i > index; i--)
-                x = x.prev;
-            return x;
-        }
     }
 
     @Override
@@ -160,46 +161,48 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
         return size;
     }
 
-//    @Override
-//    public Iterator<E> iterator() {
-//        return new Iterator<E>() {
-//            private int currentIndex = 0;
-//
-//            @Override
-//            public boolean hasNext() {
-//                return currentIndex < size;
-//            }
-//
-//            @Override
-//            public E next() {
-//                if (!hasNext()) throw new IllegalArgumentException("No next item");
-//                return (E) node(currentIndex++);
-//            }
-//        };
-//    }
-//
-//    @Override
-//    public String toString() {
-//        Iterator<E> it = iterator();
-//        if (! it.hasNext())
-//            return "[]";
-//
-//        StringBuilder sb = new StringBuilder();
-//        sb.append('[');
-//        for (;;) {
-//            E e = it.next();
-//            sb.append(e == this ? "(this Collection)" : e);
-//            if (! it.hasNext())
-//                return sb.append(']').toString();
-//            sb.append(',').append(' ');
-//        }
-//    }
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            private int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size;
+            }
+
+            @Override
+            // мне не нравится эта реализация, мне кажется next должен возвращать Node, а не E. Так ли это?
+            public E next() {
+                if (!hasNext()) throw new IllegalArgumentException("No next item");
+                return node(currentIndex++).item;
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
+        Iterator<E> it = iterator();
+        if (!it.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (; ; ) {
+            E e = it.next();
+            sb.append(e == this ? "(this Collection)" : e);
+            if (!it.hasNext())
+                return sb.append(']').toString();
+            sb.append(',').append(' ');
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -211,14 +214,16 @@ public class MyDoublyLinkedList<E> implements MyList<E> {
         }
 
         for (int i = 0; i < size; i++) {
-            if (this.node(i) == ((MyDoublyLinkedList<?>) o).node(i)) {
+            if (this.node(i).item != ((MyDoublyLinkedList<?>) o).node(i).item) {
                 return false;
             }
         }
-        return false;
+
+        return true;
     }
 
     @Override
+    // мне не нравится эта функция, как переделать правильно?
     public int hashCode() {
         return Objects.hash(first, last, size);
     }
