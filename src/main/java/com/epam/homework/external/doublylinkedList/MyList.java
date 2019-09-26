@@ -1,7 +1,5 @@
 package com.epam.homework.external.doublylinkedList;
 
-import java.util.List;
-
 public interface MyList<E> {
     void add(E e);
     E remove(int index);
@@ -10,6 +8,6 @@ public interface MyList<E> {
     void clear();
     E first();
     E last();
-    List<E> sublist(int from, int to);
+    MyDoublyLinkedList<E> sublist(int from, int to);
     int size();
 }

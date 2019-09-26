@@ -1,12 +1,11 @@
 package com.epam.homework.external.doublylinkedList;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
-    private Node first;
-    private Node last;
+    private Node<E> first;
+    private Node<E> last;
     private int size;
 
     public MyDoublyLinkedList() {
@@ -25,7 +24,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
     }
 
-    Node<E> node(int index) {
+    private Node<E> node(int index) {
         if (index < (size >> 1)) {
             Node<E> x = first;
             for (int i = 0; i < index; i++)
@@ -39,7 +38,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
     }
 
-    public int indexOf(E e) {
+    private int indexOf(E e) {
         int index = 0;
         if (e == null) {
             for (Node<E> x = first; x != null; x = x.next) {
@@ -139,7 +138,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
-    public List<E> sublist(int from, int to) {
+    public MyDoublyLinkedList<E> sublist(int from, int to) {
         if (from < 0 || from > this.size() - 1 || to < 0 || to > this.size() - 1) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
@@ -153,7 +152,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         subList.first.prev = null;
         subList.last.next = null;
 
-        return (List<E>) subList;
+        return subList;
     }
 
     @Override
