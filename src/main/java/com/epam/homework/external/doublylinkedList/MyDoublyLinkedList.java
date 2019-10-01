@@ -56,6 +56,12 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         return -1;
     }
 
+    private void checkIndex(int index) {
+        if (!(index >= 0 && index < size)) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+    }
+
     @Override
     public void add(E e) {
         final Node<E> l = last;
@@ -70,9 +76,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public E remove(int index) {
-        if (!(index >= 0 && index < size)) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
+        checkIndex(index);
 
         Node<E> removingNode = node(index);
         final E element = removingNode.item;
@@ -105,6 +109,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public E get(int index) {
+        checkIndex(index);
         return node(index).item;
     }
 
@@ -145,12 +150,16 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
 
         MyDoublyLinkedList<E> subList = new MyDoublyLinkedList<>();
 
-        subList.first = node(from);
-        subList.last = node(to);
-        subList.size = to - from;
+        int count = 0;
+
+        for (int i = from; i <= to; i++) {
+           subList.add(this.node(i).item);
+            count++;
+        }
 
         subList.first.prev = null;
         subList.last.next = null;
+        subList.size = count;
 
         return subList;
     }

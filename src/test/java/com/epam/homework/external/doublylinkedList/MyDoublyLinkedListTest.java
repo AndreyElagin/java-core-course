@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MyDoublyLinkedListTest {
     @Test
@@ -15,12 +17,13 @@ class MyDoublyLinkedListTest {
 
         testList.add(1);
 
-        assertEquals(testList.get(0), resultItem);
-        assertEquals(testList.size(), 1);
+        assertEquals(resultItem, testList.get(0));
+        assertEquals(1, testList.size());
     }
 
     @Test
-    @DisplayName("Should remove an item from list and resize the list")
+    @DisplayName("Should remove an item from the list and resize the list, or throw an IndexOutOfBoundsException " +
+            "if the index out of bounds")
     void remove() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         MyDoublyLinkedList<Integer> resultTestList = new MyDoublyLinkedList<>();
@@ -32,8 +35,13 @@ class MyDoublyLinkedListTest {
 
         testList.remove(1);
 
-        assertEquals(testList, resultTestList);
-        assertEquals(testList.size(), resultTestList.size());
+        assertEquals(resultTestList, testList);
+        assertEquals(resultTestList.size(), testList.size());
+
+        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> {
+            testList.remove(5);
+        });
+        assertEquals("Index out of bounds", exception.getMessage());
     }
 
     @Test
@@ -44,18 +52,23 @@ class MyDoublyLinkedListTest {
         testList.add(1);
         testList.add(2);
 
-        assertEquals(testList.contains(1), true);
+        assertTrue(testList.contains(1));
     }
 
     @Test
-    @DisplayName("Must return an item by index")
+    @DisplayName("Must return an item by index, or throw an IndexOutOfBoundsException if the index out of bounds")
     void get() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
         testList.add(1);
         testList.add(2);
 
-        assertEquals(testList.get(1), (Integer) 1);
+        assertEquals((Integer) 1, testList.get(1));
+
+        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> {
+            testList.get(5);
+        });
+        assertEquals("Index out of bounds", exception.getMessage());
     }
 
     @Test
@@ -68,36 +81,46 @@ class MyDoublyLinkedListTest {
 
         testList.clear();
 
-        assertEquals(testList.size(), 0);
+        assertEquals(0, testList.size());
         assertFalse(testList.contains(0));
         assertFalse(testList.contains(1));
         assertFalse(testList.contains(2));
     }
 
     @Test
-    @DisplayName("Must return the first element of the list")
+    @DisplayName("Should return the first element of the list, or throw an IllegalArgumentException " +
+            "if the element does not exist")
     void first() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
         testList.add(1);
         testList.add(2);
 
-        assertEquals(testList.first(), (Integer) 0);
+        assertEquals((Integer) 0, testList.first());
+
+        testList.clear();
+        Throwable exception = assertThrows(IllegalArgumentException.class, testList::first);
+        assertEquals("The list contains no items", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Must return the last item in the list")
+    @DisplayName("Should return the last element of the list, or throw an IllegalArgumentException " +
+            "if the element does not exist")
     void last() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
         testList.add(1);
         testList.add(2);
 
-        assertEquals(testList.last(), (Integer) 2);
+        assertEquals((Integer) 2, testList.last());
+
+        testList.clear();
+        Throwable exception = assertThrows(IllegalArgumentException.class, testList::last);
+        assertEquals("The list contains no items", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Must return a sublist of given indices")
+    @DisplayName("Should return a sublist of given indices")
     void sublist() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
@@ -110,19 +133,27 @@ class MyDoublyLinkedListTest {
         resultList.add(2);
         resultList.add(3);
 
-        System.out.println(resultList);
-        System.out.println(testList.sublist(1, 3));
-        assertEquals(testList.sublist(1, 3), resultList);
+        assertEquals(resultList, testList.sublist(1, 3));
+
+        Throwable exception1 = assertThrows(IndexOutOfBoundsException.class, () -> {
+            testList.sublist(-1, 1);
+        });
+        assertEquals("Index out of bounds", exception1.getMessage());
+
+        Throwable exception2 = assertThrows(IndexOutOfBoundsException.class, () -> {
+            testList.sublist(1, 10);
+        });
+        assertEquals("Index out of bounds", exception2.getMessage());
     }
 
     @Test
-    @DisplayName("Must return list size")
+    @DisplayName("Should return list size")
     void size() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
         testList.add(1);
         testList.add(2);
 
-        assertEquals(testList.size(), 3);
+        assertEquals(3, testList.size());
     }
 }
