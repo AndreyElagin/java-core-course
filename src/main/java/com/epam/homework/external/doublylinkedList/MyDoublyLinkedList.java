@@ -1,7 +1,6 @@
 package com.epam.homework.external.doublylinkedList;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     private Node<E> first;
@@ -12,65 +11,16 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         size = 0;
     }
 
-    private static class Node<E> {
-        E item;
-        Node<E> next;
-        Node<E> prev;
-
-        Node(Node<E> prev, E element, Node<E> next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
-
-    private Node<E> node(int index) {
-        if (index < (size >> 1)) {
-            Node<E> x = first;
-            for (int i = 0; i < index; i++)
-                x = x.next;
-            return x;
-        } else {
-            Node<E> x = last;
-            for (int i = size - 1; i > index; i--)
-                x = x.prev;
-            return x;
-        }
-    }
-
-    private int indexOf(E e) {
-        int index = 0;
-        if (e == null) {
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (x.item == null)
-                    return index;
-                index++;
-            }
-        } else {
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (e.equals(x.item))
-                    return index;
-                index++;
-            }
-        }
-        return -1;
-    }
-
-    private void checkIndex(int index) {
-        if (!(index >= 0 && index < size)) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
-    }
-
     @Override
     public void add(E e) {
         final Node<E> l = last;
         final Node<E> newNode = new Node<>(l, e, null);
         last = newNode;
-        if (l == null)
+        if (l == null) {
             first = newNode;
-        else
+        } else {
             l.next = newNode;
+        }
         size++;
     }
 
@@ -78,7 +28,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     public E remove(int index) {
         checkIndex(index);
 
-        Node<E> removingNode = node(index);
+        final Node<E> removingNode = getNode(index);
         final E element = removingNode.item;
         final Node<E> next = removingNode.next;
         final Node<E> prev = removingNode.prev;
@@ -110,7 +60,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     @Override
     public E get(int index) {
         checkIndex(index);
-        return node(index).item;
+        return getNode(index).item;
     }
 
     @Override
@@ -122,44 +72,40 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
             x.prev = null;
             x = next;
         }
-        first = last = null;
+        first = null;
+        last = null;
         size = 0;
     }
 
     @Override
     public E first() {
         final Node<E> f = first;
-        if (f == null)
-            throw new IllegalArgumentException("The list contains no items");
+        if (f == null) {
+            throw new NullPointerException("The list contains no items");
+        }
         return f.item;
     }
 
     @Override
     public E last() {
         final Node<E> l = last;
-        if (l == null)
-            throw new IllegalArgumentException("The list contains no items");
+        if (l == null) {
+            throw new NullPointerException("The list contains no items");
+        }
         return l.item;
     }
 
     @Override
     public MyDoublyLinkedList<E> sublist(int from, int to) {
-        if (from < 0 || from > this.size() - 1 || to < 0 || to > this.size() - 1) {
+        if (!(checkIndex(from) && checkIndex(to))) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
 
         MyDoublyLinkedList<E> subList = new MyDoublyLinkedList<>();
 
-        int count = 0;
-
         for (int i = from; i <= to; i++) {
-           subList.add(this.node(i).item);
-            count++;
+            subList.add(getNode(i).item);
         }
-
-        subList.first.prev = null;
-        subList.last.next = null;
-        subList.size = count;
 
         return subList;
     }
@@ -180,10 +126,11 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
             }
 
             @Override
-            // мне не нравится эта реализация, мне кажется next должен возвращать Node, а не E. Так ли это?
             public E next() {
-                if (!hasNext()) throw new IllegalArgumentException("No next item");
-                return node(currentIndex++).item;
+                if (!hasNext()) {
+                  return null;
+                }
+                return getNode(currentIndex++).item;
             }
         };
     }
@@ -191,18 +138,21 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     @Override
     public String toString() {
         Iterator<E> it = iterator();
-        if (!it.hasNext())
+        if (!it.hasNext()) {
             return "[]";
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append('[');
-        for (; ; ) {
+        for (int i = 0; i < size; i++) {
             E e = it.next();
             sb.append(e == this ? "(this Collection)" : e);
-            if (!it.hasNext())
+            if (!it.hasNext()) {
                 return sb.append(']').toString();
+            }
             sb.append(',').append(' ');
         }
+        return sb.toString();
     }
 
     @Override
@@ -222,7 +172,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
 
         for (int i = 0; i < size; i++) {
-            if (this.node(i).item != ((MyDoublyLinkedList<?>) o).node(i).item) {
+            if (!(this.getNode(i).item).equals(that.getNode(i).item)) {
                 return false;
             }
         }
@@ -231,8 +181,64 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
-    // мне не нравится эта функция, как переделать правильно?
     public int hashCode() {
-        return Objects.hash(first, last, size);
+        int hash = 31 * size;
+        for (int i = 0; i < size; i++) {
+                hash *= getNode(i).hashCode();
+        }
+        return hash;
+    }
+
+    private Node<E> getNode(int index) {
+        if (index < (size / 2)) {
+            Node<E> x = first;
+            for (int i = 0; i < index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+
+    private int indexOf(E e) {
+        int index = 0;
+        if (e == null) {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (x.item == null)
+                    return index;
+                index++;
+            }
+        } else {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (e.equals(x.item)) {
+                    return index;
+                }
+                index++;
+            }
+        }
+        return -1;
+    }
+
+    private boolean checkIndex(int index) {
+        if (!(index >= 0 && index < size)) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        return true;
+    }
+
+    private static class Node<E> {
+
+        E item;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
     }
 }
