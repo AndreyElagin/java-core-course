@@ -3,6 +3,8 @@ package com.epam.homework.external.doublylinkedList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,40 +13,39 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MyDoublyLinkedListTest {
     @Test
-    @DisplayName("Should add an item to the list at the last position and resize the list")
+    @DisplayName("Should add an element to the list at the last position and resize the list")
     void add() {
         MyDoublyLinkedList<Integer> testList1 = new MyDoublyLinkedList<>();
         MyDoublyLinkedList<Integer> testList2 = new MyDoublyLinkedList<>();
-        Integer resultItemTestList1 = 1;
-        Integer resultItemTestList2 = null;
-
+        Integer expectedItemTestList1 = 1;
+        Integer expectedItemTestList2 = null;
 
         testList1.add(1);
         testList2.add(null);
 
-        assertEquals(resultItemTestList1, testList1.get(0));
+        assertEquals(expectedItemTestList1, testList1.get(0));
         assertEquals(1, testList1.size());
-        assertEquals(resultItemTestList2, testList2.get(0));
+        assertEquals(expectedItemTestList2, testList2.get(0));
         assertEquals(1, testList1.size());
     }
 
     @Test
-    @DisplayName("Should remove an item from the list and resize the list")
+    @DisplayName("Should remove an element from the list and resize the list")
     void remove1() {
         MyDoublyLinkedList<Integer> testList1 = new MyDoublyLinkedList<>();
         MyDoublyLinkedList<Integer> testList2 = new MyDoublyLinkedList<>();
-        MyDoublyLinkedList<Integer> resultTestList = new MyDoublyLinkedList<>();
+        MyDoublyLinkedList<Integer> expectedItemTestList = new MyDoublyLinkedList<>();
         testList1.add(0);
         testList1.add(1);
         testList1.add(2);
-        resultTestList.add(0);
-        resultTestList.add(2);
+        expectedItemTestList.add(0);
+        expectedItemTestList.add(2);
         testList2.add(1);
 
         testList1.remove(1);
 
-        assertEquals(resultTestList, testList1);
-        assertEquals(resultTestList.size(), testList1.size());
+        assertEquals(expectedItemTestList, testList1);
+        assertEquals(expectedItemTestList.size(), testList1.size());
         assertEquals((Integer) 1, testList2.remove(0));
     }
 
@@ -78,7 +79,17 @@ class MyDoublyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Should return an item by index")
+    @DisplayName("Should return true if the list does not contain an element")
+    void nullTest() {
+        MyDoublyLinkedList<Integer> testList1 = new MyDoublyLinkedList<>();
+        testList1.add(null);
+        testList1.remove(0);
+
+        assertTrue(testList1.contains(null));
+    }
+
+    @Test
+    @DisplayName("Should return an element by index")
     void get1() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
         testList.add(0);
@@ -132,12 +143,12 @@ class MyDoublyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Should throw an NullPointerException if the element does not exist")
+    @DisplayName("Should throw an NoSuchElementException if the element does not exist")
     void first2() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
 
-        Throwable exception = assertThrows(NullPointerException.class, testList::first);
-        assertEquals("The list contains no items", exception.getMessage());
+        Throwable exception = assertThrows(NoSuchElementException.class, testList::first);
+        assertEquals("The list contains no elements", exception.getMessage());
     }
 
     @Test
@@ -152,29 +163,29 @@ class MyDoublyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Should throw an NullPointerException if the element does not exist")
+    @DisplayName("Should throw an NoSuchElementException if the element does not exist")
     void last2() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
 
-        Throwable exception = assertThrows(NullPointerException.class, testList::last);
-        assertEquals("The list contains no items", exception.getMessage());
+        Throwable exception = assertThrows(NoSuchElementException.class, testList::last);
+        assertEquals("The list contains no elements", exception.getMessage());
     }
 
     @Test
     @DisplayName("Should return a sublist of given indices")
     void sublist1() {
         MyDoublyLinkedList<Integer> testList = new MyDoublyLinkedList<>();
-        MyDoublyLinkedList<Integer> resultList = new MyDoublyLinkedList<>();
+        MyDoublyLinkedList<Integer> expectedItemTestList = new MyDoublyLinkedList<>();
         testList.add(0);
         testList.add(1);
         testList.add(2);
         testList.add(3);
         testList.add(4);
-        resultList.add(1);
-        resultList.add(2);
-        resultList.add(3);
+        expectedItemTestList.add(1);
+        expectedItemTestList.add(2);
+        expectedItemTestList.add(3);
 
-        assertEquals(resultList, testList.sublist(1, 3));
+        assertEquals(expectedItemTestList, testList.sublist(1, 3));
         assertEquals(3, testList.sublist(1, 3).size());
     }
 
@@ -210,20 +221,20 @@ class MyDoublyLinkedListTest {
     }
 
     @Test
-    @DisplayName("Must return a string with all list items or \"[(this Collection)]\" instead of the item " +
+    @DisplayName("Should return a string with all list elements or \"[(this Collection)]\" instead of the item " +
             "if it contains the collection itself")
     void toStringTest() {
         MyDoublyLinkedList<Integer> testList1 = new MyDoublyLinkedList<>();
         MyDoublyLinkedList<MyDoublyLinkedList> testList2 = new MyDoublyLinkedList<>();
-        String resultTestList1 = "[0, 1, 2, 3]";
-        String resultTestList2 = "[(this Collection)]";
+        String expectedItemTestList1 = "[0, 1, 2, 3]";
+        String expectedItemTestList2 = "[(this Collection)]";
         testList1.add(0);
         testList1.add(1);
         testList1.add(2);
         testList1.add(3);
         testList2.add(testList2);
 
-        assertEquals(resultTestList1, testList1.toString());
-        assertEquals(resultTestList2, testList2.toString());
+        assertEquals(expectedItemTestList1, testList1.toString());
+        assertEquals(expectedItemTestList2, testList2.toString());
     }
 }

@@ -1,6 +1,7 @@
 package com.epam.homework.external.doublylinkedList;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     private Node<E> first;
@@ -8,7 +9,6 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     private int size;
 
     public MyDoublyLinkedList() {
-        size = 0;
     }
 
     @Override
@@ -26,10 +26,10 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public E remove(int index) {
-        checkIndex(index);
+        check(index);
 
         final Node<E> removingNode = getNode(index);
-        final E element = removingNode.item;
+        final E element = removingNode.value;
         final Node<E> next = removingNode.next;
         final Node<E> prev = removingNode.prev;
 
@@ -47,27 +47,41 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
             removingNode.next = null;
         }
 
-        removingNode.item = null;
+        removingNode.value = null;
         size--;
         return element;
     }
 
     @Override
     public boolean contains(E e) {
-        return indexOf(e) >= 0;
+        Node<E> currentElem = first;
+        if (currentElem == null) {
+            return currentElem == e;
+        }
+        if (currentElem.value == null) {
+            return currentElem.value == e;
+        }
+        for (int i = 0; i < size; i++) {
+            if (currentElem.value.equals(e)) {
+                return true;
+            } else {
+                currentElem = currentElem.next;
+            }
+        }
+        return false;
     }
 
     @Override
     public E get(int index) {
-        checkIndex(index);
-        return getNode(index).item;
+        check(index);
+        return getNode(index).value;
     }
 
     @Override
     public void clear() {
         for (Node<E> x = first; x != null; ) {
             Node<E> next = x.next;
-            x.item = null;
+            x.value = null;
             x.next = null;
             x.prev = null;
             x = next;
@@ -81,18 +95,18 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
     public E first() {
         final Node<E> f = first;
         if (f == null) {
-            throw new NullPointerException("The list contains no items");
+            throw new NoSuchElementException("The list contains no elements");
         }
-        return f.item;
+        return f.value;
     }
 
     @Override
     public E last() {
         final Node<E> l = last;
         if (l == null) {
-            throw new NullPointerException("The list contains no items");
+            throw new NoSuchElementException("The list contains no elements");
         }
-        return l.item;
+        return l.value;
     }
 
     @Override
@@ -104,7 +118,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         MyDoublyLinkedList<E> subList = new MyDoublyLinkedList<>();
 
         for (int i = from; i <= to; i++) {
-            subList.add(getNode(i).item);
+            subList.add(getNode(i).value);
         }
 
         return subList;
@@ -128,9 +142,9 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
             @Override
             public E next() {
                 if (!hasNext()) {
-                  return null;
+                    throw new NoSuchElementException("No next item");
                 }
-                return getNode(currentIndex++).item;
+                return getNode(currentIndex++).value;
             }
         };
     }
@@ -172,7 +186,7 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
 
         for (int i = 0; i < size; i++) {
-            if (!(this.getNode(i).item).equals(that.getNode(i).item)) {
+            if (!(this.getNode(i).value).equals(that.getNode(i).value)) {
                 return false;
             }
         }
@@ -182,11 +196,10 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public int hashCode() {
-        int hash = 31 * size;
-        for (int i = 0; i < size; i++) {
-                hash *= getNode(i).hashCode();
-        }
-        return hash;
+        int hashCode = 1;
+        for (E e : this)
+            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        return hashCode;
     }
 
     private Node<E> getNode(int index) {
@@ -203,40 +216,27 @@ public class MyDoublyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
     }
 
-    private int indexOf(E e) {
-        int index = 0;
-        if (e == null) {
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (x.item == null)
-                    return index;
-                index++;
-            }
-        } else {
-            for (Node<E> x = first; x != null; x = x.next) {
-                if (e.equals(x.item)) {
-                    return index;
-                }
-                index++;
-            }
+    private boolean checkIndex(int index) {
+        if (index >= 0 && index < size) {
+            return true;
         }
-        return -1;
+        return false;
     }
 
-    private boolean checkIndex(int index) {
-        if (!(index >= 0 && index < size)) {
+    private void check(int index) {
+        if (!checkIndex(index)) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        return true;
     }
 
     private static class Node<E> {
 
-        E item;
+        E value;
         Node<E> next;
         Node<E> prev;
 
         Node(Node<E> prev, E element, Node<E> next) {
-            this.item = element;
+            this.value = element;
             this.next = next;
             this.prev = prev;
         }
