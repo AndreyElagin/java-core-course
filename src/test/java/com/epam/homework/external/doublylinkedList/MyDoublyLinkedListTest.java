@@ -20,8 +20,8 @@ class MyDoublyLinkedListTest {
         Integer expectedItemTestList1 = 1;
         Integer expectedItemTestList2 = null;
 
-        testList1.add(1);
-        testList2.add(null);
+        testList1.add(expectedItemTestList1);
+        testList2.add(expectedItemTestList2);
 
         assertEquals(expectedItemTestList1, testList1.get(0));
         assertEquals(1, testList1.size());
@@ -236,5 +236,19 @@ class MyDoublyLinkedListTest {
 
         assertEquals(expectedItemTestList1, testList1.toString());
         assertEquals(expectedItemTestList2, testList2.toString());
+    }
+
+    @Test
+    @DisplayName("Should throw an ClassCastException")
+    void castTest() {
+        MyDoublyLinkedList<Integer> testList1 = new MyDoublyLinkedList<>();
+        MyDoublyLinkedList raw = testList1;
+
+        raw.add("piska");
+
+        Throwable exception1 = assertThrows(ClassCastException.class, () -> {
+            int some = testList1.get(0);
+        });
+        assertEquals("class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')", exception1.getMessage());
     }
 }
