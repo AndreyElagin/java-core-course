@@ -5,7 +5,7 @@ public interface MyMap<K, V> {
 
     V remove(K key);
 
-    boolean contains(K e);
+    boolean contains(K key);
 
     V get(K key);
 
