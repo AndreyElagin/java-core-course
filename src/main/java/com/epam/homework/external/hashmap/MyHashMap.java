@@ -6,10 +6,10 @@ import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K, V>> {
-    float loadFactor = 0.75f;
+    private float loadFactor = 0.75f;
     private int capacity = 16;
     private int size = 0;
-    int threshold = (int) Math.floor(capacity * loadFactor);
+    private int threshold = (int) Math.floor(capacity * loadFactor);
     private Entry[] buckets;
 
     public MyHashMap() {
@@ -54,10 +54,7 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public boolean contains(K key) {
-        if (this.get(key) != null) {
-            return true;
-        }
-        return false;
+        return this.get(key) != null;
     }
 
     @Override
@@ -90,11 +87,18 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public void clear() {
+        Iterator<Entry<K, V>> it = iterator();
 
+        while (it.hasNext()) {
+            Entry<K, V> curEntry = it.next();
+            curEntry = null;
+        }
+        size = 0;
     }
 
     @Override
-    public Object replace(Object key, Object value) {
+    public V replace(K key, V value) {
+
         return null;
     }
 
@@ -111,11 +115,7 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
             @Override
             public boolean hasNext() {
-                if (currentIndex < size) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return currentIndex < size;
             }
 
             @Override
@@ -167,6 +167,46 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
         return sb.append('}').toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MyHashMap<K, V> that = (MyHashMap<K, V>) o;
+
+        if (this.size != that.size) {
+            return false;
+        }
+
+        Iterator<Entry<K, V>> thisIt = this.iterator();
+        Iterator<Entry<K, V>> thatIt = that.iterator();
+
+        while (thisIt.hasNext() && thatIt.hasNext()) {
+            Entry<K, V> thisEntry = thisIt.next();
+            Entry<K, V> thatEntry = thatIt.next();
+            if (!thisEntry.equals(thatEntry)) {
+                return false;
+            }
+        }
+
+        return thisIt.hasNext() == thatIt.hasNext();
+    }
+
+    @Override
+    public int hashCode() {
+        Iterator<Entry<K, V>> it = this.iterator();
+        int result = Objects.hash(size);
+        while (it.hasNext()) {
+            result = 31 * result + it.next().hashCode();
+        }
+        return result;
+    }
+
     private void putForNullKey(V value) {
         Entry<K, V> curEntry = buckets[0];
 
@@ -207,18 +247,21 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
         Entry[] newBuckets = new Entry[newCapacity];
         transfer(newBuckets);
         buckets = newBuckets;
+        capacity = newCapacity;
         threshold = (int) (newCapacity * loadFactor);
     }
 
-    private void transfer(Entry[] newTable) {
-        int newCapacity = newTable.length;
+    private void transfer(Entry[] newBuckets) {
+        int newCapacity = newBuckets.length;
+        Iterator<Entry<K, V>> it = iterator();
 
-        for (Entry<K, V> curEntry : buckets) {
+        while (it.hasNext()) {
+            Entry<K, V> curEntry = it.next();
             while (curEntry != null) {
                 Entry<K, V> next = curEntry.next;
                 int bucketIndex = indexFor(curEntry.hash, newCapacity);
-                curEntry.next = newTable[bucketIndex];
-                newTable[bucketIndex] = curEntry;
+                curEntry.next = newBuckets[bucketIndex];
+                newBuckets[bucketIndex] = curEntry;
                 curEntry = next;
             }
         }
@@ -229,11 +272,10 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
     }
 
     static class Entry<K, V> {
-
-        final K key;
+        K key;
         V value;
         Entry<K, V> next;
-        final int hash;
+        int hash;
 
         public Entry(K key, V value, Entry<K, V> next, int hash) {
             this.key = key;
@@ -254,11 +296,6 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
             return key + "=" + value;
         }
 
-        static int hash(Object key) {
-            int h;
-            return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
-        }
-
         public final V setValue(V newValue) {
             V oldValue = value;
             value = newValue;
@@ -274,9 +311,9 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
                 return false;
             }
 
-            Entry<?, ?> that = (Entry<?, ?>) o;
+            Entry<K, V> that = (Entry<K, V>) o;
 
-            return this.key.equals(that.key) && this.value.equals(that.value) && this.next.equals(that.next);
+            return this.key.equals(that.key) && this.value.equals(that.value);
         }
 
         public final int hashCode() {
