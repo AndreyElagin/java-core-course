@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class MyHashMap<K, V> implements MyMap<K, V> {
+public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K, V>> {
     float loadFactor = 0.75f;
     private int capacity = 16;
     private int size = 0;
@@ -104,12 +104,18 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     public Iterator<Entry<K, V>> iterator() {
-        return new Iterator<Entry<K, V>>() {
-            private int currentIndex = 0;
+        return new Iterator<>() {
+            int currentIndex = 0;
+            int countIndexBucket = 0;
+            Entry<K, V> prev;
 
             @Override
             public boolean hasNext() {
-                return currentIndex < size;
+                if (currentIndex < size) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             @Override
@@ -117,24 +123,47 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
                 if (!hasNext()) {
                     throw new NoSuchElementException("No next item");
                 }
-                return getEntry(currentIndex++).value;
+
+                if (prev != null) {
+                    if (prev.next != null) {
+                        prev = prev.next;
+                        currentIndex++;
+                        return prev;
+                    }
+                }
+
+                prev = getNextBucketEntry();
+                currentIndex++;
+                return prev;
+            }
+
+            private Entry<K, V> getNextBucketEntry() {
+                for (int i = countIndexBucket; i < capacity; i++) {
+                    Entry<K, V> nextEntry = buckets[i];
+                    countIndexBucket++;
+                    if (nextEntry != null) {
+                        return nextEntry;
+                    }
+                }
+                return null;
             }
         };
     }
 
     @Override
     public String toString() {
+        Iterator<Entry<K, V>> it = iterator();
         StringBuilder sb = new StringBuilder();
         sb.append('{');
 
-        for (int i = 0; i < buckets.length; i++) {
-            Entry<K, V> curEntry = buckets[i];
-
-            while (curEntry != null) {
-                sb.append(curEntry.key).append(" = ").append(curEntry.value).append(", ");
-                curEntry = curEntry.next;
+        while (it.hasNext()) {
+            var entry = it.next();
+            sb.append(entry.key).append(" = ").append(entry.value);
+            if (it.hasNext()) {
+                sb.append(", ");
             }
         }
+
         return sb.append('}').toString();
     }
 

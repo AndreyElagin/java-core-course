@@ -2,9 +2,7 @@ package com.epam.homework.external.hashmap;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MyHashMapTest {
 
@@ -37,7 +35,9 @@ class MyHashMapTest {
         expectedHashMap.put("Potato", 123);
         System.out.println(testHashMap.toString());
         System.out.println(expectedHashMap.toString());
-//        assertEquals(expectedHashMap, testHashMap.remove("Lemon"));
+        testHashMap.remove("Lemon");
+
+        assertEquals(expectedHashMap, testHashMap);
     }
 
     @Test
