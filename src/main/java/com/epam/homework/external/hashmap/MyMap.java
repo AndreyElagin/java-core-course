@@ -11,7 +11,7 @@ public interface MyMap<K, V> {
 
     void clear();
 
-    V replace(K key, V value);
+    boolean replace(K key, V value);
 
     int size();
 }

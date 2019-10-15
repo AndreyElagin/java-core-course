@@ -81,6 +81,25 @@ class MyHashMapTest {
 
     @Test
     void replace() {
+        MyHashMap<String, Integer> testHashMap = new MyHashMap<>();
+        MyHashMap<String, Integer> expectedHashMap = new MyHashMap<>();
+
+        testHashMap.put("Watermelon", 14);
+        testHashMap.put(null, 100);
+        testHashMap.replace("Watermelon", 2);
+        expectedHashMap.put("Watermelon", 2);
+        expectedHashMap.put(null, 100);
+
+        assertEquals(expectedHashMap, testHashMap);
+
+        testHashMap.replace(null, 1);
+        expectedHashMap.put(null, 1);
+
+        assertTrue(testHashMap.replace(null, 555));
+
+        expectedHashMap.put(null, 555);
+
+        assertEquals(expectedHashMap, testHashMap);
     }
 
     @Test
@@ -89,7 +108,9 @@ class MyHashMapTest {
         int expectedResult = 2;
 
         testHashMap.put("Watermelon", 14);
+        testHashMap.put("Watermelon", 16);
         testHashMap.put(null, 100);
+        testHashMap.put(null, 123);
 
         assertEquals(expectedResult, testHashMap.size());
     }

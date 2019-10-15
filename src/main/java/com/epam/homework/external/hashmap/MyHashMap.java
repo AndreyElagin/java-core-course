@@ -23,7 +23,8 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
         } else {
             putForNonNullKey(key, value);
         }
-        if (size++ >= threshold) {
+
+        if (size >= threshold) {
             resize(2 * buckets.length);
         }
     }
@@ -97,9 +98,30 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
     }
 
     @Override
-    public V replace(K key, V value) {
+    public boolean replace(K key, V value) {
+        if (key == null) {
+            Entry<K, V> curEntry = buckets[0];
+            if (curEntry != null) {
+                curEntry.value = value;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            int hash = hash(key.hashCode());
+            int bucketIndex = indexFor(hash, capacity);
+            Entry<K, V> curEntry = buckets[bucketIndex];
 
-        return null;
+            while (curEntry != null) {
+                K keyCurEntry = curEntry.key;
+                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
+                    curEntry.value = value;
+                    return true;
+                }
+                curEntry = curEntry.next;
+            }
+            return false;
+        }
     }
 
     @Override
@@ -163,7 +185,6 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
                 sb.append(", ");
             }
         }
-
         return sb.append('}').toString();
     }
 
@@ -209,17 +230,12 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     private void putForNullKey(V value) {
         Entry<K, V> curEntry = buckets[0];
-
-        while (curEntry != null) {
-            K keyCurEntry = curEntry.key;
-            System.out.println(keyCurEntry);
-            if (keyCurEntry == null) {
-                curEntry.value = value;
-            }
-            curEntry = curEntry.next;
+        if (curEntry != null) {
+            curEntry.value = value;
+        } else {
+            buckets[0] = new Entry<>(null, value, null, 0);
+            size++;
         }
-        Entry<K, V> nextElem = buckets[0];
-        buckets[0] = new Entry<>(null, value, nextElem, 0);
     }
 
     private void putForNonNullKey(K key, V value) {
@@ -231,11 +247,13 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
             K keyCurEntry = curEntry.key;
             if (curEntry.hash == hash && keyCurEntry.equals(key)) {
                 curEntry.value = value;
+                return;
             }
             curEntry = curEntry.next;
         }
         Entry<K, V> nextElem = buckets[bucketIndex];
         buckets[bucketIndex] = new Entry<>(key, value, nextElem, hash);
+        size++;
     }
 
     private static int hash(Object key) {
@@ -313,7 +331,11 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
             Entry<K, V> that = (Entry<K, V>) o;
 
-            return this.key.equals(that.key) && this.value.equals(that.value);
+            if (this.key != null && that.key != null) {
+                return this.key.equals(that.key) && this.value.equals(that.value);
+            }
+
+            return this.value.equals(that.value);
         }
 
         public final int hashCode() {
