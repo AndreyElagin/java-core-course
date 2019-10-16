@@ -19,9 +19,30 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
     @Override
     public void put(K key, V value) {
         if (key == null) {
-            putForNullKey(value);
+            Entry<K, V> curEntry = buckets[0];
+
+            if (curEntry != null) {
+                curEntry.value = value;
+            } else {
+                buckets[0] = new Entry<>(null, value, null, 0);
+                size++;
+            }
         } else {
-            putForNonNullKey(key, value);
+            int hash = key.hashCode();
+            int bucketIndex = indexFor(hash, capacity);
+            Entry<K, V> curEntry = buckets[bucketIndex];
+
+            while (curEntry != null) {
+                K keyCurEntry = curEntry.key;
+                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
+                    curEntry.value = value;
+                    return;
+                }
+                curEntry = curEntry.next;
+            }
+            Entry<K, V> nextElem = buckets[bucketIndex];
+            buckets[bucketIndex] = new Entry<>(key, value, nextElem, hash);
+            size++;
         }
 
         if (size >= threshold) {
@@ -31,24 +52,38 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public V remove(K key) {
-        int hash = (key == null) ? 0 : hash(key.hashCode());
-        int bucketIndex = indexFor(hash, buckets.length);
-        Entry<K, V> prev = buckets[bucketIndex];
-        Entry<K, V> curEntry = buckets[bucketIndex];
+        if (key == null) {
+            Entry<K, V> curEntry = buckets[0];
+            V oldValue;
 
-        while (curEntry != null) {
-            K keyCurEntry = curEntry.key;
-            Entry<K, V> next = curEntry.next;
-            if (curEntry.hash == hash && keyCurEntry.equals(key)) {
+            if (curEntry != null) {
+                oldValue = curEntry.value;
+                buckets[0] = null;
                 size--;
-                if (prev == curEntry)
-                    buckets[bucketIndex] = next;
-                else
-                    prev.next = next;
-                return curEntry.value;
+                return oldValue;
+            } else {
+                return null;
             }
-            prev = curEntry;
-            curEntry = next;
+        } else {
+            int hash = key.hashCode();
+            int bucketIndex = indexFor(hash, buckets.length);
+            Entry<K, V> prev = buckets[bucketIndex];
+            Entry<K, V> curEntry = buckets[bucketIndex];
+
+            while (curEntry != null) {
+                K keyCurEntry = curEntry.key;
+                Entry<K, V> next = curEntry.next;
+                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
+                    size--;
+                    if (prev == curEntry)
+                        buckets[bucketIndex] = next;
+                    else
+                        prev.next = next;
+                    return curEntry.value;
+                }
+                prev = curEntry;
+                curEntry = next;
+            }
         }
         return null;
     }
@@ -63,25 +98,21 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
         if (key == null) {
             Entry<K, V> curEntry = buckets[0];
 
+            if (curEntry != null) {
+                return curEntry.value;
+            }
+        } else {
+            int hash = key.hashCode();
+            int bucketIndex = indexFor(hash, buckets.length);
+            Entry<K, V> curEntry = buckets[bucketIndex];
+
             while (curEntry != null) {
-                if (curEntry.key == null) {
+                K keyCurEntry = curEntry.key;
+                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
                     return curEntry.value;
                 }
                 curEntry = curEntry.next;
             }
-            return null;
-        }
-
-        int hash = hash(key.hashCode());
-        int bucketIndex = indexFor(hash, buckets.length);
-        Entry<K, V> curEntry = buckets[bucketIndex];
-
-        while (curEntry != null) {
-            K keyCurEntry = curEntry.key;
-            if (curEntry.hash == hash && keyCurEntry.equals(key)) {
-                return curEntry.value;
-            }
-            curEntry = curEntry.next;
         }
         return null;
     }
@@ -101,6 +132,7 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
     public boolean replace(K key, V value) {
         if (key == null) {
             Entry<K, V> curEntry = buckets[0];
+
             if (curEntry != null) {
                 curEntry.value = value;
                 return true;
@@ -108,7 +140,7 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
                 return false;
             }
         } else {
-            int hash = hash(key.hashCode());
+            int hash = key.hashCode();
             int bucketIndex = indexFor(hash, capacity);
             Entry<K, V> curEntry = buckets[bucketIndex];
 
@@ -226,39 +258,6 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
             result = 31 * result + it.next().hashCode();
         }
         return result;
-    }
-
-    private void putForNullKey(V value) {
-        Entry<K, V> curEntry = buckets[0];
-        if (curEntry != null) {
-            curEntry.value = value;
-        } else {
-            buckets[0] = new Entry<>(null, value, null, 0);
-            size++;
-        }
-    }
-
-    private void putForNonNullKey(K key, V value) {
-        int hash = hash(key.hashCode());
-        int bucketIndex = indexFor(hash, capacity);
-        Entry<K, V> curEntry = buckets[bucketIndex];
-
-        while (curEntry != null) {
-            K keyCurEntry = curEntry.key;
-            if (curEntry.hash == hash && keyCurEntry.equals(key)) {
-                curEntry.value = value;
-                return;
-            }
-            curEntry = curEntry.next;
-        }
-        Entry<K, V> nextElem = buckets[bucketIndex];
-        buckets[bucketIndex] = new Entry<>(key, value, nextElem, hash);
-        size++;
-    }
-
-    private static int hash(Object key) {
-        int h;
-        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
 
     private void resize(int newCapacity) {

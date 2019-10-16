@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MyHashMapTest {
@@ -39,6 +40,13 @@ class MyHashMapTest {
         testHashMap.remove("Lemon");
 
         assertEquals(expectedHashMap, testHashMap);
+
+        testHashMap.put(null, 100);
+        testHashMap.remove(null);
+
+        assertEquals(expectedHashMap, testHashMap);
+
+        assertNull(testHashMap.remove(null));
     }
 
     @Test
