@@ -75,10 +75,11 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
                 Entry<K, V> next = curEntry.next;
                 if (curEntry.hash == hash && keyCurEntry.equals(key)) {
                     size--;
-                    if (prev == curEntry)
+                    if (prev == curEntry) {
                         buckets[bucketIndex] = next;
-                    else
+                    } else {
                         prev.next = next;
+                    }
                     return curEntry.value;
                 }
                 prev = curEntry;
