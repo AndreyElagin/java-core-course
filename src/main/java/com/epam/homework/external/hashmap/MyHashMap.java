@@ -18,32 +18,22 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public void put(K key, V value) {
-        if (key == null) {
-            Entry<K, V> curEntry = buckets[0];
+        int hash = hash(key);
+        int bucketIndex = indexFor(hash, capacity);
+        Entry<K, V> curEntry = buckets[bucketIndex];
 
-            if (curEntry != null) {
+        while (curEntry != null) {
+            K keyCurEntry = curEntry.key;
+            if (curEntry.hash == hash && keyCurEntry == key || keyCurEntry.equals(key)) {
                 curEntry.value = value;
-            } else {
-                buckets[0] = new Entry<>(null, value, null, 0);
-                size++;
+                return;
             }
-        } else {
-            int hash = key.hashCode();
-            int bucketIndex = indexFor(hash, capacity);
-            Entry<K, V> curEntry = buckets[bucketIndex];
-
-            while (curEntry != null) {
-                K keyCurEntry = curEntry.key;
-                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
-                    curEntry.value = value;
-                    return;
-                }
-                curEntry = curEntry.next;
-            }
-            Entry<K, V> nextElem = buckets[bucketIndex];
-            buckets[bucketIndex] = new Entry<>(key, value, nextElem, hash);
-            size++;
+            curEntry = curEntry.next;
         }
+
+        Entry<K, V> nextElem = buckets[bucketIndex];
+        buckets[bucketIndex] = new Entry<>(key, value, nextElem, hash);
+        size++;
 
         if (size >= threshold) {
             resize(2 * buckets.length);
@@ -52,39 +42,26 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public V remove(K key) {
-        if (key == null) {
-            Entry<K, V> curEntry = buckets[0];
-            V oldValue;
+        int hash = hash(key);
+        int bucketIndex = indexFor(hash, buckets.length);
+        Entry<K, V> prev = buckets[bucketIndex];
+        Entry<K, V> curEntry = buckets[bucketIndex];
 
-            if (curEntry != null) {
-                oldValue = curEntry.value;
-                buckets[0] = null;
+        while (curEntry != null) {
+            K keyCurEntry = curEntry.key;
+            Entry<K, V> next = curEntry.next;
+
+            if (curEntry.hash == hash && keyCurEntry == key || keyCurEntry.equals(key)) {
                 size--;
-                return oldValue;
-            } else {
-                return null;
-            }
-        } else {
-            int hash = key.hashCode();
-            int bucketIndex = indexFor(hash, buckets.length);
-            Entry<K, V> prev = buckets[bucketIndex];
-            Entry<K, V> curEntry = buckets[bucketIndex];
-
-            while (curEntry != null) {
-                K keyCurEntry = curEntry.key;
-                Entry<K, V> next = curEntry.next;
-                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
-                    size--;
-                    if (prev == curEntry) {
-                        buckets[bucketIndex] = next;
-                    } else {
-                        prev.next = next;
-                    }
-                    return curEntry.value;
+                if (prev == curEntry) {
+                    buckets[bucketIndex] = next;
+                } else {
+                    prev.next = next;
                 }
-                prev = curEntry;
-                curEntry = next;
+                return curEntry.value;
             }
+            prev = curEntry;
+            curEntry = next;
         }
         return null;
     }
@@ -96,24 +73,17 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public V get(K key) {
-        if (key == null) {
-            Entry<K, V> curEntry = buckets[0];
+        int hash = hash(key);
+        int bucketIndex = indexFor(hash, buckets.length);
+        Entry<K, V> curEntry = buckets[bucketIndex];
 
-            if (curEntry != null) {
+        while (curEntry != null) {
+            K keyCurEntry = curEntry.key;
+
+            if (curEntry.hash == hash && keyCurEntry == key || keyCurEntry.equals(key)) {
                 return curEntry.value;
             }
-        } else {
-            int hash = key.hashCode();
-            int bucketIndex = indexFor(hash, buckets.length);
-            Entry<K, V> curEntry = buckets[bucketIndex];
-
-            while (curEntry != null) {
-                K keyCurEntry = curEntry.key;
-                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
-                    return curEntry.value;
-                }
-                curEntry = curEntry.next;
-            }
+            curEntry = curEntry.next;
         }
         return null;
     }
@@ -131,30 +101,21 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     @Override
     public boolean replace(K key, V value) {
-        if (key == null) {
-            Entry<K, V> curEntry = buckets[0];
 
-            if (curEntry != null) {
-                curEntry.value = value;
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            int hash = key.hashCode();
-            int bucketIndex = indexFor(hash, capacity);
-            Entry<K, V> curEntry = buckets[bucketIndex];
+        int hash = hash(key);
+        int bucketIndex = indexFor(hash, capacity);
+        Entry<K, V> curEntry = buckets[bucketIndex];
 
-            while (curEntry != null) {
-                K keyCurEntry = curEntry.key;
-                if (curEntry.hash == hash && keyCurEntry.equals(key)) {
+        while (curEntry != null) {
+            K keyCurEntry = curEntry.key;
+
+            if (curEntry.hash == hash && keyCurEntry == key || keyCurEntry.equals(key)) {
                     curEntry.value = value;
                     return true;
                 }
                 curEntry = curEntry.next;
             }
-            return false;
-        }
+        return false;
     }
 
     @Override
@@ -261,6 +222,14 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
         return result;
     }
 
+    private int hash(K key) {
+        if (key == null) {
+            return 0;
+        } else {
+            return key.hashCode();
+        }
+    }
+
     private void resize(int newCapacity) {
         Entry[] newBuckets = new Entry[newCapacity];
         transfer(newBuckets);
@@ -271,10 +240,8 @@ public class MyHashMap<K, V> implements MyMap<K, V>, Iterable<MyHashMap.Entry<K,
 
     private void transfer(Entry[] newBuckets) {
         int newCapacity = newBuckets.length;
-        Iterator<Entry<K, V>> it = iterator();
 
-        while (it.hasNext()) {
-            Entry<K, V> curEntry = it.next();
+        for (Entry<K, V> curEntry : this) {
             while (curEntry != null) {
                 Entry<K, V> next = curEntry.next;
                 int bucketIndex = indexFor(curEntry.hash, newCapacity);
